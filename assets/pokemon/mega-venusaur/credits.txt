@@ -1,0 +1,5 @@
+Mega Venusaur normal and shiny artwork generated with OpenAI image generation, 2026-10-18.
+Technical atlas packing: tools/pack_generated_venusaur.cjs.
+Provenance and limitations: docs/design/GENERATED-SPRITES.md.
+This artwork is not a SpriteCollab contribution; its artists and CC BY-NC attribution do not apply to this generated asset.
+Pokemon characters belong to their respective owners.

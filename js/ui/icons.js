@@ -19,7 +19,7 @@ G.Icons = (() => {
     '....kkkk....', '...kpwwpk...', '..kpwwppbk..', '.kpwwppbbbk.', 'kpwwpppbbbbk', 'kppppwwbbbbk',
     'kpppwwpbbbbk', '.kppwppbbbk.', '..kpppbbbk..', '...kppbbk...', '....kkkk....', '............'] };
   const UI = {
-    'charizardite-x': MEGA_STONE, gengarite: MEGA_STONE,
+    'charizardite-x': MEGA_STONE, gengarite: MEGA_STONE, venusaurite: MEGA_STONE,
     gear: { pal: { g: '#c9d6ff', d: '#7f93c9' }, rows: [
       '....kkkk....', '.kk.kggk.kk.', '.kgkkggkkgk.', '..kggggggk..', 'kkggkkkkggkk', 'kgggk..kgddk',
       'kgggk..kgddk', 'kkggkkkkddkk', '..kggddddk..', '.kgkkddkkdk.', '.kk.kddk.kk.', '....kkkk....'] },

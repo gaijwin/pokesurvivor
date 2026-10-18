@@ -1,6 +1,6 @@
 # Combat balance fork
 
-This fork uses English and runs offline by default. Includes source-capped Poison, deterministic status ticks, true type immunity, Mega Charizard X, Mega Gengar, Mega Sanctuary and Rocket Ambush. Approach an event beacon and press F; equip a compatible Mega Stone and press M to transform.
+This fork uses English and runs offline by default. Includes source-capped Poison, deterministic status ticks, true type immunity, Mega Venusaur, Mega Charizard X, Mega Gengar, Mega Sanctuary and Rocket Ambush. Approach an event beacon and press F; equip a compatible Mega Stone and press M to transform.
 
 Design and roadmap: [PLAN.md](docs/design/PLAN.md). Implementation evidence and limitations: [COMBAT-FOUNDATIONS.md](docs/design/COMBAT-FOUNDATIONS.md) and [MEGA-EVENTS.md](docs/design/MEGA-EVENTS.md). Run tests with `node --test tests/*.test.cjs`.
 

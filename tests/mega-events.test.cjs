@@ -3,16 +3,16 @@ const root=path.resolve(__dirname,'..');
 function load(G,files){const c={G,performance,console};vm.createContext(c);for(const f of files)vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),c,{filename:f});return G;}
 function setup(dex=6){
  const no=()=>{},enemies=new Map(),packets=[],items=[],rewards=[];let id=0;
- const G={Items:{BY:{},roll:()=> 'leftovers'},DEX_BY:{6:{name:'Charizard'},94:{name:'Gengar'},448:{name:'Lucario'},23:{name:'Ekans'},109:{name:'Koffing'},52:{name:'Meowth'},53:{name:'Persian'}},SPRITE_META:{448:{},23:{},109:{},52:{},53:{}},
+ const G={Items:{BY:{},roll:()=> 'leftovers'},DEX_BY:{3:{name:'Venusaur'},6:{name:'Charizard'},94:{name:'Gengar'},448:{name:'Lucario'},23:{name:'Ekans'},109:{name:'Koffing'},52:{name:'Meowth'},53:{name:'Persian'}},SPRITE_META:{448:{},23:{},109:{},52:{},53:{}},
  Sprites:{Animator:class{constructor(d,s,sh){this.dex=d;this.shiny=sh;this.dir=0}},bodyHeight:()=>44,preload:no},Projectiles:{clearOrbs:no},FX:{ring:no},Audio:{sfx:no},Spawner:{say:no},
  Coop:{active:false,isHost:false,scaleHp:n=>1+.3*(n-1),broadcast:p=>packets.push(p),toHost:p=>packets.push(p)},U:{TYPE_COLOR:{fire:'#f00',normal:'#fff'},dist2:(x,y,a,b)=>(x-a)**2+(y-b)**2},
  World:{isFree:()=>true},Rift:{inArena:false,rift:null},Events:{current:null},Judgment:{active:false},T:s=>s};
- const p={dex,mon:{dex,types:dex===6?['fire','flying']:['ghost','poison']},x:0,y:0,dead:false,shiny:true,moves:[],slots:[],maxMoves:4,hasMove:()=>false,heal:no,anim:{dir:3}};
+ const p={dex,mon:{dex,types:dex===3?['grass','poison']:dex===6?['fire','flying']:['ghost','poison']},x:0,y:0,dead:false,shiny:true,moves:[],slots:[],maxMoves:4,hasMove:()=>false,heal:no,anim:{dir:3}};
  G.Game={player:p,everyone:()=>[p],st:{time:480},offerItem:id=>items.push(id),offerReward:cards=>rewards.push(cards)};
  G.Enemy=class{constructor(def,x,y,sc,boss){Object.assign(this,{id:++id,def,x,y,boss,hp:def.hp,dead:false});}applySlow(f,d){this.slow=f;this.slowT=d;}};
  G.EnemyMgr={get:id=>enemies.get(id),add:e=>enemies.set(e.id,e),bossAlive:()=>[...enemies.values()].some(e=>e.boss&&!e.dead),queryCircle:()=>[...enemies.values()]};
  G.Moves={BY_ID:{tackle:{kind:'melee',name:'Tackle',type:'normal'}},poolFor:()=>['tackle'],levelUp:m=>m.lvl++};
- load(G,['js/data/mega-sprites.js','js/systems/mega.js','js/systems/expeditions.js']);G.Expeditions.reset(123);
+ load(G,['js/data/mega-sprites.js','js/data/generated-mega-sprites.js','js/systems/mega.js','js/systems/expeditions.js']);G.Expeditions.reset(123);
  return {G,p,enemies,packets,items,rewards};
 }
 function begin(s,kind){assert(s.G.Expeditions.debugOffer(kind));const c=s.G.Expeditions.current;s.p.x=c.x;s.p.y=c.y;assert(s.G.Expeditions.request());}
@@ -64,13 +64,13 @@ test('client entry requests cannot spawn enemies or resolve a challenge locally'
 });
 test('all shipped normal and shiny animations have valid geometry and source credit files',()=>{
  const {G}=setup();for(const id of Object.keys(G.Mega.FORMS)){
-  const meta=G.SPRITE_META[id];assert(meta.sh);for(const shiny of [false,true])for(const [anim,a] of Object.entries(shiny?meta.sa:meta.a)){
+  const meta=G.SPRITE_META[id];assert(meta.sh);for(const shiny of [false,true])for(const [anim,a] of Object.entries(shiny?(meta.sa||meta.a):meta.a)){
    const file=path.join(root,'assets/pokemon',id,shiny?'s':'',anim+'.png');const png=fs.readFileSync(file);assert.equal(png.readUInt32BE(16),a.w*a.n);assert.equal(png.readUInt32BE(20),a.h*a.r);assert(a.ax>=0&&a.ay>=0);
   }assert(fs.readFileSync(path.join(root,'assets/pokemon',id,'credits.txt'),'utf8').length>0);
  }
 });
 test('Mega stat getters apply exactly once and restore the base attack and typing',()=>{
- for(const [dex,id,stone,mult] of [[6,'mega-charizard-x','charizardite-x',1.1],[94,'mega-gengar','gengarite',1.2]]){
+ for(const [dex,id,stone,mult] of [[3,'mega-venusaur','venusaurite',1.1],[6,'mega-charizard-x','charizardite-x',1.1],[94,'mega-gengar','gengarite',1.2]]){
   const {G,p}=setup(dex);load(G,['js/entities/player.js']);Object.setPrototypeOf(p,G.Player.prototype);
   Object.assign(p,{baseAtk:2,atkMul:1,buffs:{atk:{n:0,amount:0}},keyStone:true});
   p.equip(stone);assert(G.Mega.activate(p));assert.equal(p.atk,2*mult);assert.equal(p.dex,dex);assert.equal(p.visualDex,id);
@@ -86,4 +86,16 @@ test('a successful reward for a downed co-op player is deferred until revival an
 test('full move slots offer upgrades instead of illegally appending another slot',()=>{
  const {G,p}=setup();p.slots=[[],[],[],[]];p.moves=[{id:'tackle',name:'Tackle',type:'normal',lvl:2,def:{maxLvl:5}}];p.hasMove=()=>true;
  const cards=G.Expeditions.tmChoices(p);cards[0].apply(p);assert.equal(p.moves[0].lvl,3);assert.equal(p.slots.length,4);
+});
+
+test('Venusaur Sanctuary grants Venusaurite and supports normal and shiny Mega sprites',()=>{
+ for(const shiny of [false,true]){const s=setup(3);s.p.shiny=shiny;completeSanctuary(s);assert.deepEqual(s.items,['venusaurite']);s.p.item='venusaurite';assert(s.G.Mega.activate(s.p));assert.equal(s.p.anim.dex,'mega-venusaur');assert.equal(s.p.anim.shiny,shiny);}
+});
+test('Thick Fat halves Fire and Ice after typing, preserves other hits and pure damage',()=>{
+ const {G,p}=setup(3);load(G,['js/data/types.js','js/entities/player.js']);Object.setPrototypeOf(p,G.Player.prototype);
+ G.U.clamp=(n,min,max)=>Math.max(min,Math.min(max,n));G.Weather={mult:()=>1};G.Camera={kick:()=>{}};G.FX.dmgText=G.FX.burst=()=>{};
+ Object.assign(p,{megaId:'mega-venusaur',dmgReduce:0,buffs:{def:{n:0,amount:0}},activeGroup:()=>[],hasItem:()=>false});
+ const hit=(type,pure=false)=>{p.hp=1000;p.dead=false;p.invuln=0;p.hurt(100,type,pure);return 1000-p.hp;};
+ assert.equal(hit('fire'),80);assert.equal(hit('ice'),80);assert.equal(hit('water'),60);assert.equal(hit('psychic'),160);assert.equal(hit('fire',true),160);
+ p.megaId=null;assert.equal(hit('fire'),160);assert.equal(hit('ice'),160);
 });

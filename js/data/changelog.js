@@ -6,6 +6,9 @@
  * Cada línea en español y en inglés.
  */
 G.CHANGELOG = [
+  { d: '2026-10-18', title: ['Mega Venusaur', 'Mega Venusaur'], new: [
+    ['Mega Venusaur: normal and shiny sprites, Venusaurite and Thick Fat. Fire and Ice hits deal 50% less damage; equip the stone and press M after a Sanctuary trial.', 'Mega Venusaur: normal and shiny sprites, Venusaurite and Thick Fat. Fire and Ice hits deal 50% less damage; equip the stone and press M after a Sanctuary trial.']
+  ] },
   { d: '2026-10-18', title: ['Mega trials and Team Rocket', 'Mega trials and Team Rocket'], new: [
     ['Mega Sanctuary: charge three obelisks and defeat the guardian for a Key Stone and a compatible Mega Stone.', 'Mega Sanctuary: charge three obelisks and defeat the guardian for a Key Stone and a compatible Mega Stone.'],
     ['Mega Charizard X and Mega Gengar have real normal and shiny form sprites. Equip their stone and press M to transform once per run.', 'Mega Charizard X and Mega Gengar have real normal and shiny form sprites. Equip their stone and press M to transform once per run.'],

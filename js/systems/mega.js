@@ -1,6 +1,9 @@
 /* Run-scoped Mega Evolution. Species identity and collection/save keys never change. */
 G.Mega = (() => {
   const FORMS = {
+    'mega-venusaur': { dex: 3, name: 'Mega Venusaur', stone: 'venusaurite', stoneName: 'Venusaurite',
+      types: ['grass', 'poison'], attack: 1.10, ability: 'Thick Fat',
+      description: '+10% attack. Fire and Ice attacks deal 50% less damage.' },
     'mega-charizard-x': { dex: 6, name: 'Mega Charizard X', stone: 'charizardite-x', stoneName: 'Charizardite X',
       types: ['fire', 'dragon'], attack: 1.10, ability: 'Tough Claws',
       description: 'Fire/Dragon. +10% attack; contact moves deal 15% more damage.' },
@@ -47,6 +50,9 @@ G.Mega = (() => {
   function moveMultiplier(p, move) {
     return p && p.megaId === 'mega-charizard-x' && CONTACT.has(move.id) ? 1.15 : 1;
   }
+  function incomingMultiplier(p, type) {
+    return p && p.megaId === 'mega-venusaur' && (type === 'fire' || type === 'ice') ? .5 : 1;
+  }
   function update(dt, players) {
     if (G.Coop.active && !G.Coop.isHost) return;
     for (const p of players) {
@@ -65,5 +71,5 @@ G.Mega = (() => {
     const text=f ? `${f.name} · ${f.ability}` : 'Mega Stone ready · M';
     ctx.strokeText(text,18,146);ctx.fillText(text,18,146);ctx.restore();
   }
-  return { FORMS, form, available, activate, sync, moveMultiplier, update, drawHud };
+  return { FORMS, form, available, activate, sync, moveMultiplier, incomingMultiplier, update, drawHud };
 })();

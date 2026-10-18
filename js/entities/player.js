@@ -237,6 +237,7 @@ G.Player = class Player {
       if (k === 0) return;
       eff = G.Types.label(k);
       amount *= k * G.Weather.mult(type);
+      if (!pure && G.Mega) amount *= G.Mega.incomingMultiplier(this, type);
     }
     // Con un ataque cuerpo a cuerpo activo se recibe un 25 % menos: hay que
     // estar encima de los enemigos para pegar (iban muy por detrás).

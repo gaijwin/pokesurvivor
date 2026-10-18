@@ -4,7 +4,7 @@
 
 From minute 8, look for a Mega Sanctuary beacon. Approach within 80 world units and press **F** to accept the trial. Charge each of three marked obelisks by standing within its circle for two seconds, then defeat Lucario before the 75-second deadline. Existing world enemies remain; ordinary spawning and scheduled bosses wait while the trial is active.
 
-Success grants a run-scoped Key Stone. Charizard receives Charizardite X; Gengar receives Gengarite. Other partners, or partners that already used Mega Evolution, receive an alternative held item. Existing held items are replaced only through the normal keep/swap choice.
+Success grants a run-scoped Key Stone. Venusaur receives Venusaurite; Charizard receives Charizardite X; Gengar receives Gengarite. Other partners, or partners that already used Mega Evolution, receive an alternative held item. Existing held items are replaced only through the normal keep/swap choice.
 
 With the compatible stone equipped, press **M** to Mega Evolve once during the run. The form lasts until the stone is removed or the run ends. Removing and re-equipping a stone cannot grant another activation. Base species identity, collection entries and permanent upgrades are unchanged. A new run starts in the base form.
 
@@ -14,12 +14,13 @@ Rocket Ambush alternates with Sanctuary offers. Press **F** at its beacon, defea
 
 | Form | Typing | Adapted effect | Direct damage budget |
 |---|---|---|---|
+| Mega Venusaur | Grass / Poison | Thick Fat halves incoming Fire/Ice damage | +10% attack; a 100-point Fire/Ice hit deals 80 instead of 160 with the softened type chart, before other defenses; pure damage bypasses Thick Fat |
 | Mega Charizard X | Fire / Dragon | Tough Claws on an explicit contact-move list | +10% attack, ×1.15 contact damage; combined +26.5% on eligible moves |
 | Mega Gengar | Ghost / Poison | Shadow Tag within 160 world units, host-authoritative | +20% attack; 25% slow on normal enemies, 8% on bosses |
 
 These numbers and real-time effects are survivor adaptations. They are not the numeric effects of the turn-based Pokémon abilities. Positive damage modifiers are also included in the status-source reference so the Poison cap stays consistent with its move. Existing stronger slows take precedence.
 
-Real SpriteCollab normal/shiny animations are included for both shipped forms, with frame geometry and raw credits. See [MEGA-CREDITS.md](../MEGA-CREDITS.md). Mega Venusaur, Mega Charizard Y and Mega Blastoise lack complete sprites in the pinned source revision and are not presented as available forms.
+SpriteCollab normal/shiny animations are included for Charizard X and Gengar. Mega Venusaur uses newly generated normal/shiny atlases, packed into eight directions and seven states (two walking frames; other states are single poses). See [MEGA-CREDITS.md](../MEGA-CREDITS.md) and [GENERATED-SPRITES.md](GENERATED-SPRITES.md). Mega Charizard Y and Mega Blastoise remain unavailable: the pinned source lacks complete sprites and image generation rejected both attempts.
 
 ## Scheduling and authority
 
