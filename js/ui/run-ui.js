@@ -6,6 +6,7 @@ G.RunUI = (() => {
   /** @param coop  en grupo: tras elegir, se queda esperando a los demás */
   function showLevelUp(level, list, cb, coop = false) {
     offerCb = cb; coopMode = coop;
+    $('level-choice-title').innerHTML = 'Level <span id="lvl-num"></span>';
     $('lvl-num').textContent = level;
     $('lvl-wait').textContent = '';
     $('lvl-wait').classList.toggle('hidden', !coop);

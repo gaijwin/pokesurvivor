@@ -6,6 +6,11 @@
  * Cada línea en español y en inglés.
  */
 G.CHANGELOG = [
+  { d: '2026-10-18', title: ['Mega trials and Team Rocket', 'Mega trials and Team Rocket'], new: [
+    ['Mega Sanctuary: charge three obelisks and defeat the guardian for a Key Stone and a compatible Mega Stone.', 'Mega Sanctuary: charge three obelisks and defeat the guardian for a Key Stone and a compatible Mega Stone.'],
+    ['Mega Charizard X and Mega Gengar have real normal and shiny form sprites. Equip their stone and press M to transform once per run.', 'Mega Charizard X and Mega Gengar have real normal and shiny form sprites. Equip their stone and press M to transform once per run.'],
+    ['Rocket Ambush: defeat three waves and a commander, then choose a TM reward. Approach an event beacon and press F to begin.', 'Rocket Ambush: defeat three waves and a commander, then choose a TM reward. Approach an event beacon and press F to begin.']
+  ] },
   { d: '2026-10-18', title: ['Combat balance foundations', 'Combat balance foundations'], chg: [
     ['Poison now scales with its source move, with a shared eight-stack cap and individual expiry times.',
      'Poison now scales with its source move, with a shared eight-stack cap and individual expiry times.'],

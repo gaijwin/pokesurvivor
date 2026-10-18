@@ -140,3 +140,7 @@ licencia en `assets/fonts/OFL.txt`). El juego usa una versión modificada,
 
 Pokémon es propiedad de Nintendo, Creatures Inc. y GAME FREAK.
 Este es un proyecto de fan sin ánimo de lucro.
+
+## Mega form additions
+
+See [MEGA-CREDITS.md](docs/MEGA-CREDITS.md) for the pinned SpriteCollab source revision and the normal/shiny animation artists.

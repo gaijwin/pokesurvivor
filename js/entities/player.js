@@ -88,11 +88,13 @@ G.Player = class Player {
   cy() { return this.y; }
 
   // ---------------- stats efectivos ----------------
-  get atk() { return this.baseAtk * this.atkMul * (1 + this.buffs.atk.n * this.buffs.atk.amount); }
+  get types() { const f = G.Mega && G.Mega.form(this); return f ? f.types : this.mon.types; }
+  get visualDex() { return this.megaId || this.dex; }
+  get atk() { const f = G.Mega && G.Mega.form(this); return this.baseAtk * this.atkMul * (1 + this.buffs.atk.n * this.buffs.atk.amount) * (f ? f.attack : 1); }
   get spd() {
     const s = this.baseSpd * this.spdMul * (1 + this.buffs.spd.n * this.buffs.spd.amount) * (this.slowT > 0 ? 0.5 : 1);
-    const w = G.Weather.speedFor(this.mon.types);
-    const slow = this.inLiquid ? G.World.liquidEffect(this.mon.types).slow || 1 : 1;
+    const w = G.Weather.speedFor(this.types);
+    const slow = this.inLiquid ? G.World.liquidEffect(this.types).slow || 1 : 1;
     return s * slow * w;
   }
   get reduction() { return Math.min(0.8, this.dmgReduce + this.buffs.def.n * this.buffs.def.amount); }
@@ -215,7 +217,7 @@ G.Player = class Player {
     if (m.kind === 'trail') return;
     // No reinicies una animación que va por la mitad: se vería a tirones.
     if (this.anim.busy() && this.anim.progress() < 0.65) return;
-    const meta = G.Sprites.animMeta(this.dex, anim);
+    const meta = G.Sprites.animMeta(this.visualDex, anim);
     const len = meta ? meta.d.reduce((a, b) => a + b, 0) / 60 : 0.4;
     const cd = Math.max(0.12, m.cd * this.cdMul);
     this.anim.play(anim, { speed: Math.max(1, len / (cd * 0.9)) });
@@ -231,7 +233,7 @@ G.Player = class Player {
     if (this.invuln > 0 || this.dead) return;
     let eff = null;
     if (type) {
-      const k = G.Types.mult(type, this.mon.types);
+      const k = G.Types.mult(type, this.types);
       if (k === 0) return;
       eff = G.Types.label(k);
       amount *= k * G.Weather.mult(type);
@@ -337,7 +339,7 @@ G.Player = class Player {
     this.walking = ax !== 0 || ay !== 0;
     const s = this.spd;
     // Hielo: resbalas (la velocidad cambia despacio).
-    const slide = this.inLiquid && G.World.liquidEffect(this.mon.types).slide;
+    const slide = this.inLiquid && G.World.liquidEffect(this.types).slide;
     this.svx = slide ? G.U.damp(this.svx || 0, ax * s * 1.15, 1.6, dt) : ax * s;
     this.svy = slide ? G.U.damp(this.svy || 0, ay * s * 1.15, 1.6, dt) : ay * s;
     this.x += this.svx * dt;
@@ -348,7 +350,7 @@ G.Player = class Player {
     // --- terreno líquido ---
     this.inLiquid = G.World.isLiquid(this.x, this.y);
     if (this.inLiquid) {
-      const le = G.World.liquidEffect(this.mon.types);
+      const le = G.World.liquidEffect(this.types);
       if (le.dmg) {
         this.lavaTick -= dt;
         if (this.lavaTick <= 0) {
@@ -409,6 +411,7 @@ G.Player = class Player {
     this.anim.update(dt);
     const n = this.net;
     if (!n) return;
+    if (G.Mega) G.Mega.sync(this, n.mega);
     if (this.flash > 0) this.flash -= dt;
     if (this.attackFace > 0) this.attackFace -= dt;
     if (G.U.dist2(this.x, this.y, n.x, n.y) > 300 * 300) { this.x = n.x; this.y = n.y; }
@@ -446,7 +449,7 @@ G.Player = class Player {
       ctx.beginPath(); ctx.ellipse(this.x, this.y, this.r * 1.5, this.r * 0.6, 0, 0, 6.2832); ctx.stroke();
       ctx.restore();
     }
-    G.Sprites.drawShadow(ctx, this.dex, this.x, this.y);
+    G.Sprites.drawShadow(ctx, this.visualDex, this.x, this.y);
     // Poder de altar: aro de su color latiendo bajo los pies.
     if (this.power && !this.dead) {
       ctx.save();

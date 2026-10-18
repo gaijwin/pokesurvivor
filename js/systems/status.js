@@ -10,7 +10,7 @@ G.Status = (() => {
   function source(owner, move) {
     const interval = move.kind === 'trail' ? 0.5 : move.kind === 'turret' ? (move.rate || 0.6)
       : move.kind === 'orbit' ? Math.max(0.12, move.cd) : Math.max(0.05, move.cd * (owner.cdMul || 1));
-    return { owner, moveId: move.id, reference: move.dmg * owner.atk / interval, level: owner.level || 1 };
+    return { owner, moveId: move.id, reference: move.dmg * owner.atk * (G.Mega ? G.Mega.moveMultiplier(owner, move) : 1) / interval, level: owner.level || 1 };
   }
 
   function state(e) {

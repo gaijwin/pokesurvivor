@@ -165,6 +165,7 @@
         if (this.shiny) { G.FX.burst(this.x, cy, '#ffe9a0', 30, 220); G.FX.ring(this.x, this.y, this.r, this.r * 7, '#9ae6ff', 0.7, 5); }
         return;
       }
+      if (this.expedition) { G.Audio.sfx(this.boss ? 'bossDown' : 'faint'); return; }
       // (Los legendarios de la Sentencia de Arceus sólo dan experiencia.)
       if (this.boss && !this.judge) {
         G.Camera.kick(0.9);
@@ -894,13 +895,15 @@
         const e = list[i];
         if (e.remote) continue;
         if (e.dead) {
-          pl.kills++;
-          if (e.boss && !e.judge) pl.bosses++;
-          G.Progress.kill(e);
+          if (!e.expeditionDismissed) {
+            pl.kills++;
+            if (e.boss && !e.judge) pl.bosses++;
+            G.Progress.kill(e);
+          }
           corpses.push(e);
           list.splice(i, 1);
           byId.delete(e.id);
-          if (G.Coop.isHost) G.Coop.enemyGone(e, true);
+          if (G.Coop.isHost) G.Coop.enemyGone(e, !e.expeditionDismissed);
           continue;
         }
         const near = nearestPlayer(players, e.x, e.y) || pl;

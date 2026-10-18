@@ -204,6 +204,8 @@ G.HUD = (() => {
 
     // Eventos: cuenta atrás, flecha al Pokémon perdido / a la marca y a los duendes.
     G.Events.drawHud(ctx, w, h, pl, F);
+    G.Expeditions.drawHud(ctx, w, h, pl, F);
+    G.Mega.drawHud(ctx, w, h, pl, F);
 
     // Aviso propio al abrirse una grieta (no lo tapan los otros avisos).
     if (rift && rift.t < 4.5) {
