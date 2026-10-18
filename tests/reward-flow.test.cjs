@@ -10,7 +10,7 @@ function setup(){
  return {G,p,shown,node,open,get holds(){return holds}};
 }
 test('TM selection pauses co-op, applies one choice and releases its hold',()=>{
- const s=setup();let applied=0;s.G.Game.offerReward([{title:'TM',apply(){applied++}}]);assert.equal(s.G.Game._state(),'choice');assert.equal(s.holds,1);assert.equal(s.node('level-choice-title').textContent,'Choose a TM reward');s.open.delete('scr-levelup');s.shown[0].cb(s.shown[0].cards[0]);assert.equal(applied,1);assert.equal(s.G.Game._state(),'playing');assert.equal(s.holds,0);
+ const s=setup();let applied=0;s.G.Game.offerReward([{title:'TM',apply(){applied++}}]);assert.equal(s.G.Game._state(),'choice');assert.equal(s.holds,1);assert.equal(s.node('level-choice-title').textContent,'Choose your reward');s.open.delete('scr-levelup');s.shown[0].cb(s.shown[0].cards[0]);assert.equal(applied,1);assert.equal(s.G.Game._state(),'playing');assert.equal(s.holds,0);
 });
 test('a shared level-up interrupt restores the pending TM selection and balances holds',()=>{
  const s=setup();const cards=[{title:'TM',apply(){}}];s.G.Game.offerReward(cards);s.G.Game._level(13);assert.equal(s.holds,0);assert.equal(s.G.Game._state(),'levelup');s.G.Game._resume();assert.equal(s.G.Game._state(),'choice');assert.equal(s.holds,1);assert.equal(s.shown.at(-1).cards,cards);

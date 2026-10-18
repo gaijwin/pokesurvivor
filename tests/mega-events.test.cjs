@@ -64,7 +64,7 @@ test('client entry requests cannot spawn enemies or resolve a challenge locally'
 });
 test('all shipped normal and shiny animations have valid geometry and source credit files',()=>{
  const {G}=setup();for(const id of Object.keys(G.Mega.FORMS)){
-  const meta=G.SPRITE_META[id];assert(meta.sh);for(const shiny of [false,true])for(const [anim,a] of Object.entries(shiny?(meta.sa||meta.a):meta.a)){
+  const meta=G.SPRITE_META[id];if(!meta){assert.equal(G.Mega.available({dex:G.Mega.FORMS[id].dex}).some(([key])=>key===id),false);continue;}assert(meta.sh);for(const shiny of [false,true])for(const [anim,a] of Object.entries(shiny?(meta.sa||meta.a):meta.a)){
    const file=path.join(root,'assets/pokemon',id,shiny?'s':'',anim+'.png');const png=fs.readFileSync(file);assert.equal(png.readUInt32BE(16),a.w*a.n);assert.equal(png.readUInt32BE(20),a.h*a.r);assert(a.ax>=0&&a.ay>=0);
   }assert(fs.readFileSync(path.join(root,'assets/pokemon',id,'credits.txt'),'utf8').length>0);
  }

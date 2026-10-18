@@ -22,3 +22,9 @@ test('host damage reports credit only the intended local player',()=>{
  receive('host',{k:'f',ev:[['dot','guest','sludge','poison',20],['dot','guest','sludge','poison',20],['dot','guest','sludge','poison',15],['dot','host','sludge','poison',999]]});
  assert.equal(G.Coop.local.dotDamage,20);assert.equal(G.Coop.local.damageByMove.sludge.poison,20);
 });
+test('player frames carry evolution and specialization after the existing Mega field',()=>{
+ const {G,receive}=setup(),calls=[];
+ G.Evolution={sync:(p,d)=>calls.push(['evolution',d])};G.Mega={sync:(p,d)=>calls.push(['mega',d])};G.Battle={sync:(p,s)=>calls.push(['battle',s.kind,s.tera])};
+ const frame=[10,20,0,1,80,100,0,'sludge',3,78,0,1,0,0,0,null,3,{kind:'tera',tera:'water',max:0,gmax:null}];
+ receive('guest',{k:'f',p:frame});const n=G.Coop.mate('guest').pl.net;assert.equal(n.evolved,3);assert.equal(n.battle.tera,'water');assert.equal(n.hp,80);assert.deepEqual(calls,[['evolution',3],['mega',null],['battle','tera','water']]);
+});

@@ -81,7 +81,7 @@ G.Combat = (() => {
   }
 
   /** Tabla de tipos × clima para un ataque de tipo `type` contra `e`. */
-  function typeK(type, e) { return G.Types.mult(type, e.types) * G.Weather.mult(type); }
+  function typeK(type, e) { return G.Types.mult(type, e.types) * G.Weather.mult(type) * (G.Expeditions ? G.Expeditions.damageMultiplier(type,e) : 1); }
 
   function fireProjectiles(pl, m) {
     const col = G.U.TYPE_COLOR[m.type];

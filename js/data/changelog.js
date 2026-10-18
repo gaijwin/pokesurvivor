@@ -6,6 +6,14 @@
  * Cada línea en español y en inglés.
  */
 G.CHANGELOG = [
+  { d: '2026-10-18', title: ['Battle specializations and field challenges', 'Battle specializations and field challenges'], new: [
+    ['Gigantamax Snorlax has normal/shiny sprites and G-Max Replenish: restore one previously consumed Lum Berry once during its transformation.', 'Gigantamax Snorlax has normal/shiny sprites and G-Max Replenish: restore one previously consumed Lum Berry once during its transformation.'],
+    ['Mega Lucario joins with normal/shiny sprites and Adaptability. Matching-type moves now gain a modest STAB bonus.', 'Mega Lucario joins with normal/shiny sprites and Adaptability. Matching-type moves now gain a modest STAB bonus.'],
+    ['Choose one run specialization at Mega Sanctuary: Mega Evolution, a matching Z-Crystal, Terastallization or Dynamax. Use Z, T or X after unlocking equipment.', 'Choose one run specialization at Mega Sanctuary: Mega Evolution, a matching Z-Crystal, Terastallization or Dynamax. Use Z, T or X after unlocking equipment.'],
+    ['Space-Time Distortion rotates type resonance for 90 seconds. Berry Grove asks you to defend a tree for a healing harvest or one-use Lum Berry.', 'Space-Time Distortion rotates type resonance for 90 seconds. Berry Grove asks you to defend a tree for a healing harvest or one-use Lum Berry.'],
+    ['Press V to accept eligible starter species evolutions from generations 1-3. Collection and ranking identity stay unchanged.', 'Press V to accept eligible starter species evolutions from generations 1-3. Collection and ranking identity stay unchanged.'],
+    ['Target Poison/Burn indicators show stack counts and independent expiry ranges. Event beacons preview their rewards.', 'Target Poison/Burn indicators show stack counts and independent expiry ranges. Event beacons preview their rewards.']
+  ] },
   { d: '2026-10-18', title: ['Mega Venusaur', 'Mega Venusaur'], new: [
     ['Mega Venusaur: normal and shiny sprites, Venusaurite and Thick Fat. Fire and Ice hits deal 50% less damage; equip the stone and press M after a Sanctuary trial.', 'Mega Venusaur: normal and shiny sprites, Venusaurite and Thick Fat. Fire and Ice hits deal 50% less damage; equip the stone and press M after a Sanctuary trial.']
   ] },

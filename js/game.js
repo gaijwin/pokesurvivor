@@ -449,7 +449,7 @@ G.Game = (() => {
       if (G.Coop.active) G.Coop.holdEnd();
       afterLevelUp();
     });
-    document.getElementById('level-choice-title').textContent = 'Choose a TM reward';
+    document.getElementById('level-choice-title').textContent = 'Choose your reward';
     document.getElementById('lvl-reroll').classList.add('hidden');
   }
 
@@ -543,7 +543,7 @@ G.Game = (() => {
       return;
     }
     if (state === 'choice' && openReward) {
-      for (let i = 0; i < 3; i++) if (G.Input.tap('digit' + (i + 1)) || G.Input.tap('numpad' + (i + 1))) G.RunUI.pick(i);
+      for (let i = 0; i < Math.min(9,openReward.length); i++) if (G.Input.tap('digit' + (i + 1)) || G.Input.tap('numpad' + (i + 1))) G.RunUI.pick(i);
       return;
     }
     if (state === 'levelup') {
@@ -576,7 +576,11 @@ G.Game = (() => {
     for (let i = 0; i < 4; i++) {
       if (G.Input.tap('digit' + (i + 1)) || G.Input.tap('numpad' + (i + 1))) pl.setActive(i);
     }
-    if (state === 'playing' && G.Input.tap('keym')) G.Mega.activate(pl);
+    if (G.Input.tap('keym')) G.Mega.activate(pl);
+    if (G.Input.tap('keyz')) G.Battle.activateZ(pl);
+    if (G.Input.tap('keyt')) G.Battle.activateTera(pl);
+    if (G.Input.tap('keyx')) G.Battle.activateMax(pl);
+    if (G.Input.tap('keyv')) G.Evolution.activate(pl);
     if (state === 'playing' && G.Input.tap('keyf')) G.Expeditions.request(pl);
     if (G.Input.tap('keyq')) pl.cycle(-1);
     if (G.Input.tap('keye') || G.Input.tap('tab')) pl.cycle(1);
@@ -679,6 +683,8 @@ G.Game = (() => {
     G.World.update(dt, G.Camera);
 
     const all = everyone();
+    G.Battle.update(dt, pl);
+    G.Battle.hostWeather(dt, all);
     G.Mega.update(dt, all);
     if (!coop || G.Coop.isHost) { G.Path.update(dt, all); G.Spawner.update(dt, all, time); }
     else G.Spawner.tickBanner(dt);

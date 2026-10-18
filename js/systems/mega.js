@@ -1,6 +1,12 @@
 /* Run-scoped Mega Evolution. Species identity and collection/save keys never change. */
 G.Mega = (() => {
   const FORMS = {
+    'mega-lucario': { dex: 448, name: 'Mega Lucario', stone: 'lucarionite', stoneName: 'Lucarionite',
+      types: ['fighting', 'steel'], attack: 1.05, ability: 'Adaptability', description: '+5% attack. Matching-type moves receive 30% STAB instead of 15%.' },
+    'mega-charizard-y': { dex: 6, name: 'Mega Charizard Y', stone: 'charizardite-y', stoneName: 'Charizardite Y',
+      types: ['fire', 'flying'], attack: 1, ability: 'Drought', description: 'Summons 30 seconds of sun, at most once every 60 seconds. Requires a complete sprite atlas.' },
+    'mega-blastoise': { dex: 9, name: 'Mega Blastoise', stone: 'blastoisinite', stoneName: 'Blastoisinite',
+      types: ['water'], attack: 1, ability: 'Mega Launcher', description: 'Aura Sphere and Dark Pulse deal 25% more damage. Requires a complete sprite atlas.' },
     'mega-venusaur': { dex: 3, name: 'Mega Venusaur', stone: 'venusaurite', stoneName: 'Venusaurite',
       types: ['grass', 'poison'], attack: 1.10, ability: 'Thick Fat',
       description: '+10% attack. Fire and Ice attacks deal 50% less damage.' },
@@ -19,24 +25,24 @@ G.Mega = (() => {
       on() {}, off(p) { if (p.megaId === id) setForm(p, null); } };
   }
   const form = p => p && FORMS[p.megaId];
-  const available = p => Object.entries(FORMS).filter(([id,f]) => p && f.dex === p.dex && G.SPRITE_META[id]);
+  const available = p => Object.entries(FORMS).filter(([id,f]) => p && f.dex === (p.evolvedDex || p.dex) && G.SPRITE_META[id]);
 
   function setForm(p, id) {
     const f = FORMS[id];
-    if (id && (!f || f.dex !== p.dex || !G.SPRITE_META[id])) return false;
+    if (id && (!f || f.dex !== (p.evolvedDex || p.dex) || !G.SPRITE_META[id])) return false;
     const direction = p.anim ? p.anim.dir : 0;
     p.megaId = id || null;
-    p.anim = new G.Sprites.Animator(id || p.dex, 1, p.shiny);
+    p.anim = new G.Sprites.Animator(id || p.evolvedDex || p.dex, 1, p.shiny);
     p.anim.dir = direction;
-    p.bodyH = G.Sprites.bodyHeight(id || p.dex);
-    G.Sprites.preload([id || p.dex], 8000, p.shiny);
+    p.bodyH = G.Sprites.bodyHeight(id || p.evolvedDex || p.dex);
+    G.Sprites.preload([id || p.evolvedDex || p.dex], 8000, p.shiny);
     return true;
   }
   function activate(p) {
-    if (!p || p.dead || p.megaUsed || !p.keyStone) return false;
+    if (!p || p.dead || p.megaUsed || !p.keyStone || (p.specialUnlock && p.specialUnlock !== 'mega') || (p.specialization && p.specialization !== 'mega')) return false;
     const match = available(p).find(([,f]) => f.stone === p.item);
     if (!match || !setForm(p, match[0])) return false;
-    p.megaUsed = true;
+    p.megaUsed = true; p.specialization = 'mega';
     G.Projectiles.clearOrbs(p);
     G.FX.ring(p.x, p.y, 8, 100, '#e7a4ff', .8, 6);
     G.Audio.sfx('legend');
@@ -44,11 +50,13 @@ G.Mega = (() => {
     return true;
   }
   function sync(p, id) {
-    const next = FORMS[id] && FORMS[id].dex === p.dex ? id : null;
+    const next = FORMS[id] && FORMS[id].dex === (p.evolvedDex || p.dex) ? id : null;
     if ((p.megaId || null) !== next) setForm(p, next);
   }
   function moveMultiplier(p, move) {
-    return p && p.megaId === 'mega-charizard-x' && CONTACT.has(move.id) ? 1.15 : 1;
+    const ability = p && p.megaId === 'mega-charizard-x' && CONTACT.has(move.id) ? 1.15
+      : p && p.megaId === 'mega-blastoise' && ['aura-sphere','dark-pulse'].includes(move.id) ? 1.25 : 1;
+    return ability * (G.Battle ? G.Battle.multiplier(p, move) : 1);
   }
   function incomingMultiplier(p, type) {
     return p && p.megaId === 'mega-venusaur' && (type === 'fire' || type === 'ice') ? .5 : 1;
@@ -56,6 +64,10 @@ G.Mega = (() => {
   function update(dt, players) {
     if (G.Coop.active && !G.Coop.isHost) return;
     for (const p of players) {
+      if (!p.dead && p.megaId === 'mega-charizard-y') {
+        p.droughtT = (p.droughtT || 0) - dt;
+        if (p.droughtT <= 0 && !G.Rift.inArena && !G.Judgment.active) {p.droughtT=60;G.Weather.debugStart('sun',30);}
+      }
       if (p.dead || p.megaId !== 'mega-gengar') continue;
       p.shadowTagT = (p.shadowTagT || 0) - dt;
       if (p.shadowTagT > 0) continue;

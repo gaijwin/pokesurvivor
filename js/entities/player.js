@@ -88,8 +88,9 @@ G.Player = class Player {
   cy() { return this.y; }
 
   // ---------------- stats efectivos ----------------
-  get types() { const f = G.Mega && G.Mega.form(this); return f ? f.types : this.mon.types; }
-  get visualDex() { return this.megaId || this.dex; }
+  get battleMon() { return this.evolvedDex ? (G.DEX_BY[this.evolvedDex] || this.mon) : this.mon; }
+  get types() { if (this.teraType) return [this.teraType]; const f = G.Mega && G.Mega.form(this); return f ? f.types : this.battleMon.types; }
+  get visualDex() { return this.maxForm || this.megaId || this.evolvedDex || this.dex; }
   get atk() { const f = G.Mega && G.Mega.form(this); return this.baseAtk * this.atkMul * (1 + this.buffs.atk.n * this.buffs.atk.amount) * (f ? f.attack : 1); }
   get spd() {
     const s = this.baseSpd * this.spdMul * (1 + this.buffs.spd.n * this.buffs.spd.amount) * (this.slowT > 0 ? 0.5 : 1);
@@ -272,7 +273,10 @@ G.Player = class Player {
     if (got >= 1) G.FX.dmgText(this.x, this.y - this.bodyH - 6, '+' + got, '#5fe08a');
   }
 
-  addMaxHp(amount) { this.maxHp += amount; this.hp += amount; }
+  addMaxHp(amount) {
+    if (this.maxHpBefore) { this.maxHpBefore += amount; this.maxHp += amount * 1.5; this.hp += amount * 1.5; }
+    else { this.maxHp += amount; this.hp += amount; }
+  }
 
   /** Devuelve cuántos niveles ha subido (pueden ser varios de golpe). */
   gainXp(amount) {
@@ -412,7 +416,9 @@ G.Player = class Player {
     this.anim.update(dt);
     const n = this.net;
     if (!n) return;
+    if (G.Evolution && n.evolved) G.Evolution.sync(this, n.evolved);
     if (G.Mega) G.Mega.sync(this, n.mega);
+    if (G.Battle) G.Battle.sync(this, n.battle);
     if (this.flash > 0) this.flash -= dt;
     if (this.attackFace > 0) this.attackFace -= dt;
     if (G.U.dist2(this.x, this.y, n.x, n.y) > 300 * 300) { this.x = n.x; this.y = n.y; }
@@ -462,6 +468,8 @@ G.Player = class Player {
 
     const alpha = this.invuln > 0 && !this.dead ? (Math.floor(this.invuln * 18) % 2 ? 0.45 : 1) : 1;
     this.anim.draw(ctx, this.x, this.y, { flash: this.flash > 0, softFlash: true, alpha, color: '#ffcb3d' });
+
+    if (G.Battle) G.Battle.drawForm(ctx,this);
 
     // Arcos de buff alrededor de los pies.
     const COL = { atk: '#ff6b4d', spd: '#7fe0ff', def: '#b0b8c8', regen: '#5fe08a' };

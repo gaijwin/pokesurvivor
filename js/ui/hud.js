@@ -45,7 +45,7 @@ G.HUD = (() => {
     ctx.font = F(800, 13);
     ctx.fillStyle = '#eaf2ff';
     ctx.textAlign = 'left';
-    ctx.fillText(pl.mon.name, px, py + 10);
+    ctx.fillText(((pl.maxForm && G.Battle.gmaxAvailable(pl)) || G.Mega.form(pl) || pl.battleMon || pl.mon).name, px, py + 10);
 
     ctx.font = F(700, 11);
     ctx.fillStyle = '#ffcb3d';
@@ -206,6 +206,9 @@ G.HUD = (() => {
     G.Events.drawHud(ctx, w, h, pl, F);
     G.Expeditions.drawHud(ctx, w, h, pl, F);
     G.Mega.drawHud(ctx, w, h, pl, F);
+    G.Battle.drawHud(ctx, w, h, pl, F);
+    G.Status.drawHud(ctx, w, h, pl.target, F);
+    G.Evolution.drawHud(ctx, w, h, pl, F);
 
     // Aviso propio al abrirse una grieta (no lo tapan los otros avisos).
     if (rift && rift.t < 4.5) {

@@ -888,7 +888,7 @@
       rebuildGrid();
       for (const e of list) {
         if (e.remote) e.netUpdate(dt);
-        else e.update(dt, nearestPlayer(players, e.x, e.y) || pl);
+        else e.update(dt, (G.Expeditions && G.Expeditions.targetFor(e)) || nearestPlayer(players, e.x, e.y) || pl);
       }
       if (!G.Coop.active || G.Coop.isHost) separate(dt);
       for (let i = list.length - 1; i >= 0; i--) {

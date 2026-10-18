@@ -11,7 +11,7 @@
 G.Items = (() => {
   const LIST = [
     { id: 'leftovers', name: 'Restos', desc: 'Recuperas un 1,5% de tu vida por segundo.',
-      on: p => { p.regenFlat += p.maxHp * 0.015; p._itemRegen = p.maxHp * 0.015; },
+      on: p => { p.regenFlat += (p.maxHpBefore || p.maxHp) * 0.015; p._itemRegen = (p.maxHpBefore || p.maxHp) * 0.015; },
       off: p => { p.regenFlat -= p._itemRegen || 0; } },
     { id: 'choiceband', name: 'Cinta Elección', desc: '+40% de daño, pero no puedes cambiar de movimiento.',
       on: p => { p.atkMul *= 1.4; }, off: p => { p.atkMul /= 1.4; } },

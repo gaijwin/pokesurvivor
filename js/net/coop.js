@@ -135,12 +135,12 @@ G.Coop = (() => {
     const m = g.find(x => x.kind === 'orbit') || g[0];
     return [r1(local.x), r1(local.y), r2(local.moveAngle), local.walking ? 1 : 0, r1(local.hp), r1(local.maxHp),
             local.dead ? 1 : 0, m ? m.id : '', m ? m.lvl : 1, r1(local.magnet), r2(local.aim), r2(local.xpMul),
-            r2(local.reviveT || 0), api.choosing && api.choosing() ? 1 : 0, doneSeq, local.megaId || null];
+            r2(local.reviveT || 0), api.choosing && api.choosing() ? 1 : 0, doneSeq, local.megaId || null, local.evolvedDex || null, G.Battle.snapshot(local)];
   }
 
   function readState(a) {
     return { x: a[0], y: a[1], ang: a[2], walk: a[3], hp: a[4], maxHp: a[5], dead: a[6], mv: a[7], ml: a[8],
-             mag: a[9], aim: a[10], xpMul: a[11], rev: a[12], ch: a[13], ld: a[14], mega: a[15] || null };
+             mag: a[9], aim: a[10], xpMul: a[11], rev: a[12], ch: a[13], ld: a[14], mega: a[15] || null, evolved: a[16] || null, battle: a[17] || null };
   }
 
   // ---------------- envío ----------------
@@ -168,7 +168,7 @@ G.Coop = (() => {
       if (e.dead || G.U.dist2(e.x, e.y, near.x, near.y) > r2n) continue;
       const a = ANIMS.indexOf(e.anim.cur);
       out.push([e.id, r1(e.x), r1(e.y), Math.ceil(e.hp), a < 0 ? 0 : a, e.anim.dir,
-                (e.burn > 0 ? 1 : 0) | (e.poison > 0 ? 2 : 0) | (e.shield > 0 ? 4 : 0)]);
+                (e.burn > 0 ? 1 : 0) | (e.poison > 0 ? 2 : 0) | (e.shield > 0 ? 4 : 0), G.Status.summary(e).map(s=>[s.kind,s.count,r2(s.next),r2(s.last)])]);
     }
     return out;
   }
@@ -251,7 +251,7 @@ G.Coop = (() => {
   function onClientFrame(from, msg) {
     const m = mates.get(from);
     if (!m || !m.connected) return;
-    if (msg.p) { m.state = msg.p; m.pl.net = readState(msg.p); if (G.Mega) G.Mega.sync(m.pl, m.pl.net.mega); m.xpMul = m.pl.net.xpMul || 1; reconcile(from, m.pl.net); }
+    if (msg.p) { m.state = msg.p; m.pl.net = readState(msg.p); if (G.Evolution && m.pl.net.evolved) G.Evolution.sync(m.pl,m.pl.net.evolved); if (G.Mega) G.Mega.sync(m.pl, m.pl.net.mega); if (G.Battle) G.Battle.sync(m.pl,m.pl.net.battle); m.xpMul = m.pl.net.xpMul || 1; reconcile(from, m.pl.net); }
     for (const ev of msg.ev || []) {
       switch (ev[0]) {
         case 'h': {
@@ -341,7 +341,7 @@ G.Coop = (() => {
       } else { n.vx = 0; n.vy = 0; }
       n.x = a[1]; n.y = a[2]; n.age = 0; n.last = now;
       e.hp = Math.min(e.maxHp, a[3]);
-      n.anim = a[4]; n.dir = a[5]; n.st = a[6];
+      n.anim = a[4]; n.dir = a[5]; n.st = a[6]; n.status = a[7] || [];
     }
   }
 

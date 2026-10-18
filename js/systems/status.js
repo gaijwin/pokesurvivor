@@ -121,5 +121,24 @@ G.Status = (() => {
     }
   }
 
-  return { source, apply, update, record };
+  function summary(e) {
+    if(!e || e.dead)return [];
+    if(e.remote && e.net && Array.isArray(e.net.status))return e.net.status.flatMap(s=>{
+      if(!Array.isArray(s)||!RULES[s[0]]||!Number.isFinite(s[1])||!Number.isFinite(s[2])||!Number.isFinite(s[3]))return [];
+      const age=Math.max(0,e.net.age||0),last=Math.max(0,s[3]-age);
+      return last>0?[{kind:s[0],count:Math.max(0,Math.min(8,s[1])),next:Math.max(0,s[2]-age),last,color:RULES[s[0]].color}]:[];
+    });
+    return Object.keys(RULES).flatMap(kind=>{
+      const state=e.statusState,st=state&&state[kind];
+      if(!st||!st.stacks.length)return [];
+      const expiry=st.stacks.map(s=>Math.max(0,s.expires-state.time));
+      return [{kind,count:st.stacks.length,next:Math.min(...expiry),last:Math.max(...expiry),color:RULES[kind].color}];
+    });
+  }
+  function drawHud(ctx,w,h,e,F){
+    const rows=summary(e);if(!rows.length)return;
+    ctx.save();ctx.font=F(700,11);ctx.textAlign='right';ctx.strokeStyle='#000';ctx.lineWidth=4;
+    rows.forEach((s,i)=>{const text=`Target ${s.kind}: ${s.count}/8 · expiry ${s.next.toFixed(1)}–${s.last.toFixed(1)} s`;ctx.fillStyle=s.color;ctx.strokeText(text,w-18,146+i*17);ctx.fillText(text,w-18,146+i*17);});ctx.restore();
+  }
+  return { source, apply, update, record, summary, drawHud };
 })();

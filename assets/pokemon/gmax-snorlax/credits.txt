@@ -1,0 +1,4 @@
+Gigantamax Snorlax normal and shiny artwork generated with OpenAI image generation on 2026-10-18.
+Technical import: tools/pack_generated_gmax.cjs.
+Provenance and prompt set: docs/design/GMAX-SPRITES.md.
+This is not a SpriteCollab contribution. Pokemon characters belong to their respective owners.
