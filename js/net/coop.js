@@ -69,6 +69,7 @@ G.Coop = (() => {
     api = cb;
     members = cfg.members;
     mates.clear();
+    dotSeen.clear();
     outEv = []; flushT = 0; waiting = new Set(); holds = new Set();
     hostAway = false; stalled = false; lastHostAt = performance.now();
     levelSeq = 0; levelNow = 1; seenSeq = 0; doneSeq = 0; lastHo = '';
@@ -262,10 +263,12 @@ G.Coop = (() => {
           break;
         }
         case 's': {
+          if (!Number.isSafeInteger(ev[5]) || ev[5] <= (m.lastStatusSeq || 0)) break;
+          m.lastStatusSeq = ev[5];
           const e = G.EnemyMgr.get(ev[1]);
           if (!e || e.dead) break;
-          if (ev[2] === 'b') e.applyBurn(ev[3]);
-          else if (ev[2] === 'p') e.applyPoison(ev[3]);
+          if (ev[2] === 'b') e.applyBurn(ev[3], statusSource(m.pl, ev[4]));
+          else if (ev[2] === 'p') e.applyPoison(ev[3], statusSource(m.pl, ev[4]));
           else if (ev[2] === 's') e.applySlow(ev[3]);
           break;
         }
@@ -348,6 +351,12 @@ G.Coop = (() => {
         break;
       case 'ed': G.EnemyMgr.removeRemote(ev[1], true); break;
       case 'eg': G.EnemyMgr.removeRemote(ev[1], false); break;
+      case 'dot': {
+        if (ev[1] !== me || !['poison', 'burn'].includes(ev[3]) || !Number.isFinite(ev[4])) break;
+        const key = ev[2] + ':' + ev[3], previous = dotSeen.get(key) || 0;
+        if (ev[4] > previous) { G.Status.record(local, ev[2], ev[3], ev[4] - previous); dotSeen.set(key, ev[4]); }
+        break;
+      }
       case 'hn': { const e = G.EnemyMgr.get(ev[1]); if (e && !e.dead) e.showHurt(ev[2], ev[3]); break; }
       case 'es':
         G.Projectiles.spawn({ x: ev[1], y: ev[2], vx: ev[3], vy: ev[4], dmg: ev[5], r: ev[6], life: ev[7],
@@ -393,7 +402,19 @@ G.Coop = (() => {
 
   // invitado
   function hit(e, d, color, dx, dy, knock) { outEv.push(['h', e.id, d, color, r1(dx), r1(dy), knock || 0]); }
-  function status(e, kind, val) { outEv.push(['s', e.id, kind, val]); }
+  const dotSeen = new Map();
+  let statusSeq = 0;
+  function status(e, kind, val, src) {
+    outEv.push(['s', e.id, kind, val, src ? { moveId: src.moveId, reference: src.reference, level: src.level } : null, ++statusSeq]);
+  }
+  // Validate untrusted network payloads. Ownership always comes from the sending connection.
+  function statusSource(owner, data) {
+    if (!data || typeof data.moveId !== 'string' || !Object.prototype.hasOwnProperty.call(G.Moves.BY_ID, data.moveId) ||
+        !Number.isFinite(data.reference) || data.reference <= 0 ||
+        !Number.isFinite(data.level) || data.level < 1) return null;
+    return { owner, moveId: data.moveId, reference: Math.min(100000, data.reference), level: Math.min(1000, data.level) };
+  }
+  function statusDamage(owner, moveId, kind) { emit(['dot', owner.uid, moveId, kind, owner.damageByMove[moveId][kind]]); }
 
   // anfitrión
   function hurtShown(e, d, color) { emitNear(['hn', e.id, d, color], e.x, e.y, hitFrom); }
@@ -492,7 +513,7 @@ G.Coop = (() => {
 
   return {
     ANIMS, COLORS, begin, end, leave, tick, players, puppets, xpFactor, scaleRate, scaleHp,
-    cast, hit, status, hurtShown, enemyAdded, enemyGone, enemyShot, pickupAdded, pickupGone, say,
+    cast, hit, status, statusDamage, hurtShown, enemyAdded, enemyGone, enemyShot, pickupAdded, pickupGone, say,
     propBroken, collected, shinyCaught, levelStart, localPicked, over, holdStart, holdEnd,
     /** Anfitrión: evento para todos. Invitado: evento para el anfitrión. */
     broadcast(ev) { emit(ev); },

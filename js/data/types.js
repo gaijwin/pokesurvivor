@@ -3,7 +3,7 @@
  * donde sólo llevas un ataque activo y no puedes cambiar de Pokémon:
  *
  *   juegos   ×2      ×0,5    ×0 (inmune)
- *   aquí     ×1,6    ×0,6    ×0,3
+ *   fork     ×1.6    ×0.6    ×0 (true immunity)
  *
  * Con dos tipos se multiplican (×1,6 · ×1,6 = ×2,56), con tope en [×0,3, ×2,4].
  * Se usa en los dos sentidos: tus ataques contra los enemigos y los de los
@@ -38,6 +38,7 @@ G.Types = (() => {
   function mult(atk, def) {
     const row = CHART[atk];
     if (!row || !def) return 1;
+    if (def.some(t => row[t] === 0)) return 0;
     let m = 1;
     for (const t of def) if (row[t] != null) m *= SOFT[row[t]];
     return G.U.clamp(m, MIN, MAX);

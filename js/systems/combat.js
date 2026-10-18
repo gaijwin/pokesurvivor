@@ -76,8 +76,8 @@ G.Combat = (() => {
     return 520;
   }
 
-  function payload(m) {
-    return { burn: m.burn || 0, poison: m.poison || 0, slow: m.slow || 0, knock: m.knock || 0, mtype: m.type };
+  function payload(m, pl) {
+    return { burn: m.burn || 0, poison: m.poison || 0, slow: m.slow || 0, knock: m.knock || 0, mtype: m.type, statusSource: G.Status.source(pl, m) };
   }
 
   /** Tabla de tipos × clima para un ataque de tipo `type` contra `e`. */
@@ -97,7 +97,7 @@ G.Combat = (() => {
         dmg: m.dmg * pl.atk, r: m.size, life: m.life,
         pierce: m.pierce | 0, color: col, homing: m.homing || 0,
         hits: new Set(), vis, ghost, owner: pl
-      }, payload(m)));
+      }, payload(m, pl)));
     }
     G.FX.spark(pl.x + Math.cos(pl.aim) * pl.r, pl.y - G.LIFT + Math.sin(pl.aim) * pl.r,
                col, Math.cos(pl.aim), Math.sin(pl.aim), 3);
@@ -115,7 +115,7 @@ G.Combat = (() => {
         dmg: m.dmg * pl.atk, r: m.size, life: m.life,
         pierce: m.pierce | 0, color: col, homing: m.homing || 0,
         hits: new Set(), vis, ghost, owner: pl
-      }, payload(m)));
+      }, payload(m, pl)));
     }
     G.FX.ring(pl.x, pl.y, pl.r, pl.r * 4, col, 0.3, 3);
   }
@@ -188,8 +188,8 @@ G.Combat = (() => {
     if (ghost) return;
     let healed = 0;
     for (const e of G.EnemyMgr.queryCircle(pl.x, pl.y, m.radius)) {
-      hit(pl, e, m.dmg * pl.atk, col, e.x - pl.x, e.y - pl.y, 0, m);
-      if (m.drain) healed += m.drain;
+      const dealt = hit(pl, e, m.dmg * pl.atk, col, e.x - pl.x, e.y - pl.y, 0, m);
+      if (dealt > 0 && m.drain) healed += m.drain;
     }
     for (const p of G.World.propsInCircle(pl.x, pl.y, m.radius)) G.World.damageProp(p, m.dmg * pl.atk, col);
     if (healed > 0) pl.heal(Math.min(healed, 6));
@@ -219,7 +219,7 @@ G.Combat = (() => {
         x: pl.x, y: pl.y, vx: Math.cos(a) * m.speed, vy: Math.sin(a) * m.speed,
         dmg: m.dmg * pl.atk, r: m.size, life: out * 4 + 1.5, pierce: 999, color: col,
         hits: new Set(), vis, ghost, owner: pl, boom: out, bsp: m.speed * 1.1
-      }, payload(m)));
+      }, payload(m, pl)));
     }
   }
 
@@ -345,7 +345,7 @@ G.Combat = (() => {
         x: pl.x + Math.cos(a) * 4, y: pl.y + Math.sin(a) * 4, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
         dmg: m.dmg * pl.atk, r: m.size, life: m.life * G.U.rand(0.85, 1.05), pierce: m.pierce | 0, color: col,
         hits: new Set(), vis, ghost, owner: pl
-      }, payload(m)));
+      }, payload(m, pl)));
     }
     G.FX.spark(pl.x + Math.cos(pl.aim) * pl.r, pl.y - G.LIFT + Math.sin(pl.aim) * pl.r, col, Math.cos(pl.aim), Math.sin(pl.aim), 5);
   }
@@ -393,7 +393,7 @@ G.Combat = (() => {
               x: f.x, y: f.y, vx: Math.cos(a) * (m.speed || 300), vy: Math.sin(a) * (m.speed || 300),
               dmg: f.dmg, r: m.size || 6, life: 1.4, pierce: m.pierce | 0, color: f.col,
               hits: new Set(), vis: f.vis, ghost: f.ghost, owner: f.owner
-            }, payload(m)));
+            }, payload(m, f.owner)));
             f.kick = 0.12;
           }
         }
@@ -484,12 +484,13 @@ G.Combat = (() => {
         dmg: m.dmg * pl.atk,
         oa: (i / want) * 6.2832, orad: m.radius, ospeed: m.speed,
         rehit: Math.max(0.12, m.cd),
-        knock: m.knock || 0, burn: m.burn || 0, poison: m.poison || 0, slow: m.slow || 0, mtype: m.type
+        knock: m.knock || 0, burn: m.burn || 0, poison: m.poison || 0, slow: m.slow || 0, mtype: m.type, statusSource: G.Status.source(pl, m)
       });
     }
     const live = G.Projectiles.all().filter(mine);
     live.forEach((p, i) => {
       p.dmg = m.dmg * pl.atk;
+      p.statusSource = G.Status.source(pl, m);
       p.orad = m.radius;
       p.ospeed = m.speed;
       p.r = m.size;
@@ -528,14 +529,17 @@ G.Combat = (() => {
 
   function hit(pl, e, dmg, col, dx, dy, knock, m) {
     const k = typeK(m.type, e);
+    if (ghost || k <= 0) return;
     const crit = isCrit(pl);
     dmg *= k * (crit ? CRIT_MUL : 1);
-    e.hurt(dmg, col, dx, dy, knock, crit ? 'crit' : G.Types.label(G.Types.mult(m.type, e.types)));
-    if (!ghost) pl.onDealt(dmg);
-    pl.dmgDealt += dmg;
-    if (m.burn) e.applyBurn(m.burn);
-    if (m.poison) e.applyPoison(m.poison);
+    const effective = e.hurt(dmg, col, dx, dy, knock, crit ? 'crit' : G.Types.label(G.Types.mult(m.type, e.types)));
+    pl.onDealt(effective);
+    G.Status.record(pl, m.id, 'direct', effective);
+    const source = G.Status.source(pl, m);
+    if (m.burn) e.applyBurn(m.burn, source);
+    if (m.poison) e.applyPoison(m.poison, source);
     if (m.slow) e.applySlow(m.slow);
+    return effective;
   }
 
   // ---------------- colisiones ----------------
@@ -637,14 +641,16 @@ G.Combat = (() => {
 
         const crit = isCrit(pl);
         const k = (p.mtype ? typeK(p.mtype, e) : 1) * (crit ? CRIT_MUL : 1);
-        e.hurt(p.dmg * k, p.color, p.vx || (e.x - pl.x), p.vy || (e.y - pl.y), p.knock,
-               crit ? 'crit' : p.mtype ? G.Types.label(G.Types.mult(p.mtype, e.types)) : null);
-        if (Math.random() < 0.5) G.FX.sp('impact', p.vis ? p.vis.pal : 'normal', e.x, e.y - e.bodyH * 0.5, { life: 0.12, scale: 1 });
-        pl.dmgDealt += p.dmg * k;
-        pl.onDealt(p.dmg * k);
-        if (p.burn) e.applyBurn(p.burn);
-        if (p.poison) e.applyPoison(p.poison);
-        if (p.slow) e.applySlow(p.slow);
+        if (k > 0) {
+          const effective = e.hurt(p.dmg * k, p.color, p.vx || (e.x - pl.x), p.vy || (e.y - pl.y), p.knock,
+                 crit ? 'crit' : p.mtype ? G.Types.label(G.Types.mult(p.mtype, e.types)) : null);
+          if (Math.random() < 0.5) G.FX.sp('impact', p.vis ? p.vis.pal : 'normal', e.x, e.y - G.LIFT, { life: 0.12, scale: 1 });
+          G.Status.record(pl, p.mid || (p.statusSource && p.statusSource.moveId), 'direct', effective);
+          pl.onDealt(effective);
+          if (p.burn) e.applyBurn(p.burn, p.statusSource);
+          if (p.poison) e.applyPoison(p.poison, p.statusSource);
+          if (p.slow) e.applySlow(p.slow);
+        }
 
         if (!p.orb) {
           if (p.pierce > 0) { p.pierce--; }

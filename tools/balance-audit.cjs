@@ -4,7 +4,8 @@ const vm = require('node:vm');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
-const enemy = fs.readFileSync(path.join(root, 'js/entities/enemy.js'), 'utf8');
+const baseline = '5bbc3b29288d6af4596f21188fb8b54e0e9b739f';
+const enemy = require('node:child_process').execFileSync('git', ['show', baseline + ':js/entities/enemy.js'], {cwd:root,encoding:'utf8'});
 assert(enemy.includes('this.maxHp * 0.012 * this.poison + 1'));
 assert(enemy.includes('1.6 * this.burn * (1 + pl.level * 0.06)'));
 const ctx = {G: {}}; vm.createContext(ctx);
@@ -30,6 +31,6 @@ const moves = ['ember','sludge','poison-sting','water-gun','thunder-shock'].map(
 });
 assert.equal(rows[3].proposedPoison8DpsAtB300,105);
 assert(rows[3].poison8Dps>rows[3].burn8Level40Dps*40);
-const report={commit:require('node:child_process').execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),assumptions:'Neutral type/weather; steady 8 stacks; no shield; continuous refresh; no ramp/overkill. B=300 is a design scenario, not measured build DPS. Projectile bounds exclude status, accuracy, crit, player multipliers.',rows,frames,moves};
+const report={commit:baseline,assumptions:'Neutral type/weather; steady 8 stacks; no shield; continuous refresh; no ramp/overkill. B=300 is a design scenario, not measured build DPS. Projectile bounds exclude status, accuracy, crit, player multipliers.',rows,frames,moves};
 fs.writeFileSync(path.join(root,'docs/design/balance-results.json'),JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify(report,null,2));

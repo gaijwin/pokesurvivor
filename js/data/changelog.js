@@ -6,6 +6,17 @@
  * Cada línea en español y en inglés.
  */
 G.CHANGELOG = [
+  { d: '2026-10-18', title: ['Combat balance foundations', 'Combat balance foundations'], chg: [
+    ['Poison now scales with its source move, with a shared eight-stack cap and individual expiry times.',
+     'Poison now scales with its source move, with a shared eight-stack cap and individual expiry times.'],
+    ['This edition uses English. Cloud features require a separate Firebase project.',
+     'This edition uses English. Cloud features require a separate Firebase project.']
+  ], fix: [
+    ['Type immunity prevents both damage and attached effects. Poison and Steel resist poisoning; Fire resists burns.',
+     'Type immunity prevents both damage and attached effects. Poison and Steel resist poisoning; Fire resists burns.'],
+    ['Damage-over-time ticks preserve elapsed time at every frame rate and credit their source without triggering life steal.',
+     'Damage-over-time ticks preserve elapsed time at every frame rate and credit their source without triggering life steal.']
+  ] },
   { d: '2026-10-15', title: ['Actualizaciones obligatorias', 'Required updates'], chg: [
     ['Cuando una actualización sea obligatoria (por ejemplo, para arreglar un fallo importante), la partida en curso se termina tras un aviso de 10 s y el juego se recarga. No pierdes nada: las monedas, los tickets, los récords y el ranking de esa partida se guardan como al abandonarla.',
      'When an update is required (for example, to fix an important bug), your current run ends after a 10 s notice and the game reloads. You lose nothing: that run’s coins, tickets, records and leaderboard entry are saved as if you had quit.']

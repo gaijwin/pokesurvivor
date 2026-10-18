@@ -1,3 +1,11 @@
+# Combat balance fork
+
+This fork uses English and runs offline by default. Current work: source-capped Poison, deterministic status ticks, true type immunity and damage attribution.
+
+Design and roadmap: [PLAN.md](docs/design/PLAN.md). Implementation evidence and limitations: [COMBAT-FOUNDATIONS.md](docs/design/COMBAT-FOUNDATIONS.md). Run tests with `node --test tests/*.test.cjs`.
+
+---
+
 # PokéSurvivor · Mundo Misterioso
 
 Bullet-heaven con Pokémon al estilo de Survivor.io y Megabonk, con sprites de

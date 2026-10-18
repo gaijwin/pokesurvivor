@@ -57,6 +57,8 @@ G.Player = class Player {
     this.coins = 0;            // monedas recogidas en esta run
     this.t1 = 0; this.t10 = 0; // tickets del gacha recogidos en esta run
     this.dmgDealt = 0;
+    this.dotDamage = 0;
+    this.damageByMove = {};
 
     this.invuln = 0;
     this.flash = 0;
@@ -230,6 +232,7 @@ G.Player = class Player {
     let eff = null;
     if (type) {
       const k = G.Types.mult(type, this.mon.types);
+      if (k === 0) return;
       eff = G.Types.label(k);
       amount *= k * G.Weather.mult(type);
     }
