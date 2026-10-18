@@ -1,3 +1,11 @@
+# Combat balance fork
+
+This fork uses English and runs offline by default. Includes source-capped Poison, deterministic status ticks, true type immunity, Mega Venusaur, Mega Charizard X, Mega Gengar, Mega Lucario, Z-Moves, Terastallization, Dynamax/Gigantamax Snorlax, starter species evolution, Mega Sanctuary, Rocket Ambush, Space-Time Distortion and Berry Grove. Approach an event beacon and press F; choose one specialization at the Sanctuary. Controls and numeric budgets: [SPECIALIZATIONS.md](docs/design/SPECIALIZATIONS.md).
+
+Design and roadmap: [PLAN.md](docs/design/PLAN.md). Implementation evidence and limitations: [COMBAT-FOUNDATIONS.md](docs/design/COMBAT-FOUNDATIONS.md) and [MEGA-EVENTS.md](docs/design/MEGA-EVENTS.md). Run tests with `node --test tests/*.test.cjs`.
+
+---
+
 # PokéSurvivor · Mundo Misterioso
 
 Bullet-heaven con Pokémon al estilo de Survivor.io y Megabonk, con sprites de

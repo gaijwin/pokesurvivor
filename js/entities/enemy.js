@@ -98,21 +98,23 @@
 
     /** @param eff  'super' | 'weak' | null (tabla de tipos, sólo para enseñarlo) */
     hurt(amount, color = '#fff', dirX = 0, dirY = 0, knock = 0, eff = null) {
-      if (this.dead) return;
+      if (this.dead || !Number.isFinite(amount) || amount <= 0) return 0;
+      const beforeHp = this.hp;
       const d = Math.max(1, Math.round(amount));
       // Copia de un enemigo del anfitrión: el golpe se le manda a él, que es
       // quien decide si cae. Aquí sólo se ve (número, destello y animación).
       if (this.remote) {
         G.Coop.hit(this, d, color, dirX, dirY, knock);
+        const effective = Math.min(Math.max(0, this.hp - 1), d);
         this.hp = Math.max(1, this.hp - d);
         this.showHurt(d, color, dirX, dirY, eff);
-        return;
+        return effective;
       }
       // Escudo: absorbe primero.
       if (this.shield > 0) {
         const a = Math.min(this.shield, d);
         this.shield -= a;
-        if (a >= d) { G.FX.dmgText(this.x, this.y - this.bodyH - 4, d, '#9fd8ff'); this.flash = 0.05; return; }
+        if (a >= d) { G.FX.dmgText(this.x, this.y - this.bodyH - 4, d, '#9fd8ff'); this.flash = 0.05; return 0; }
         amount = d - a;
       }
       this.hp -= Math.max(1, Math.round(amount));
@@ -125,6 +127,7 @@
       }
       if (G.Coop.isHost) G.Coop.hurtShown(this, d, color);
       if (this.hp <= 0) this.die();
+      return Math.max(0, beforeHp - Math.max(0, this.hp));
     }
 
     /** Lo que se VE al recibir un golpe. */
@@ -143,14 +146,8 @@
       this.slow = Math.max(this.slow, factor);
       this.slowT = Math.max(this.slowT, dur);
     }
-    applyBurn(stacks = 1) {
-      if (this.remote) { G.Coop.status(this, 'b', stacks); return; }
-      this.burn = Math.min(8, this.burn + stacks); this.burnT = 3;
-    }
-    applyPoison(stacks = 1) {
-      if (this.remote) { G.Coop.status(this, 'p', stacks); return; }
-      this.poison = Math.min(8, this.poison + stacks); this.poisonT = 4;
-    }
+    applyBurn(stacks = 1, source) { return G.Status.apply(this, 'burn', stacks, source); }
+    applyPoison(stacks = 1, source) { return G.Status.apply(this, 'poison', stacks, source); }
 
     die() {
       if (this.dead) return;
@@ -168,6 +165,7 @@
         if (this.shiny) { G.FX.burst(this.x, cy, '#ffe9a0', 30, 220); G.FX.ring(this.x, this.y, this.r, this.r * 7, '#9ae6ff', 0.7, 5); }
         return;
       }
+      if (this.expedition) { G.Audio.sfx(this.boss ? 'bossDown' : 'faint'); return; }
       // (Los legendarios de la Sentencia de Arceus sólo dan experiencia.)
       if (this.boss && !this.judge) {
         G.Camera.kick(0.9);
@@ -252,16 +250,7 @@
 
       // --- estados ---
       if (this.slowT > 0) { this.slowT -= dt; if (this.slowT <= 0) this.slow = 0; }
-      if (this.burn > 0) {
-        this.burnT -= dt; this.burnTick -= dt;
-        if (this.burnTick <= 0) { this.burnTick = 0.5; this.hurt(1.6 * this.burn * (1 + pl.level * 0.06), '#ff9a4d'); }
-        if (this.burnT <= 0) this.burn = 0;
-      }
-      if (this.poison > 0) {
-        this.poisonT -= dt; this.poisonTick -= dt;
-        if (this.poisonTick <= 0) { this.poisonTick = 0.6; this.hurt(this.maxHp * 0.012 * this.poison + 1, '#d47cf0'); }
-        if (this.poisonT <= 0) this.poison = 0;
-      }
+      G.Status.update(this, dt);
       if (this.dead) return;
 
       // --- terreno ---
@@ -899,20 +888,22 @@
       rebuildGrid();
       for (const e of list) {
         if (e.remote) e.netUpdate(dt);
-        else e.update(dt, nearestPlayer(players, e.x, e.y) || pl);
+        else e.update(dt, (G.Expeditions && G.Expeditions.targetFor(e)) || nearestPlayer(players, e.x, e.y) || pl);
       }
       if (!G.Coop.active || G.Coop.isHost) separate(dt);
       for (let i = list.length - 1; i >= 0; i--) {
         const e = list[i];
         if (e.remote) continue;
         if (e.dead) {
-          pl.kills++;
-          if (e.boss && !e.judge) pl.bosses++;
-          G.Progress.kill(e);
+          if (!e.expeditionDismissed) {
+            pl.kills++;
+            if (e.boss && !e.judge) pl.bosses++;
+            G.Progress.kill(e);
+          }
           corpses.push(e);
           list.splice(i, 1);
           byId.delete(e.id);
-          if (G.Coop.isHost) G.Coop.enemyGone(e, true);
+          if (G.Coop.isHost) G.Coop.enemyGone(e, !e.expeditionDismissed);
           continue;
         }
         const near = nearestPlayer(players, e.x, e.y) || pl;

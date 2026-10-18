@@ -17,12 +17,9 @@
  * (español si el navegador está en español, inglés en cualquier otro caso).
  */
 G.I18n = (() => {
+  // This fork uses English regardless of browser locale or a legacy saved language.
   const KEY = 'ps.lang';
-  let saved = null;
-  try { saved = localStorage.getItem(KEY); } catch (e) { /* nada */ }
-  const byPath = /\/en(\/|$)/.test(location.pathname) ? 'en' : null;
-  const nav = ((navigator.languages && navigator.languages[0]) || navigator.language || 'es').toLowerCase();
-  const lang = saved === 'es' || saved === 'en' ? saved : byPath || (nav.startsWith('es') ? 'es' : 'en');
+  const lang = 'en';
   document.documentElement.lang = lang;
 
   const exact = new Map(), exactLow = new Map();
@@ -154,7 +151,7 @@ G.I18n = (() => {
   }
 
   function set(l) {
-    try { localStorage.setItem(KEY, l); } catch (e) { /* nada */ }
+    try { localStorage.setItem(KEY, 'en'); } catch (e) { /* nada */ }
     location.reload();
   }
 

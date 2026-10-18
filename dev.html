@@ -509,7 +509,7 @@
 <!-- ====== Durante la run ====== -->
 <section id="scr-levelup" class="scr dim hidden">
   <div class="box center">
-    <h2>¡Nivel <span id="lvl-num">2</span>!</h2>
+    <h2 id="level-choice-title">Level <span id="lvl-num">2</span></h2>
     <p class="sub">Elige una recompensa · <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd></p>
     <div id="cards" class="cards"></div>
     <button id="lvl-reroll" class="btn small ghost hidden" data-sfx="none" style="margin-top:10px">Cambiar opciones (<span id="lvl-rr-n">1</span>) · <kbd>R</kbd></button>
@@ -538,7 +538,7 @@
 <section id="scr-pause" class="scr dim hidden">
   <div class="box center" style="width:min(460px,100%)">
     <h2>Pausa</h2>
-    <p class="sub kbd-hint"><kbd>WASD</kbd> moverse · <kbd>1</kbd>–<kbd>4</kbd> movimiento · <kbd>Q</kbd>/<kbd>E</kbd> ciclar · <kbd>Esc</kbd> pausa</p>
+    <p class="sub kbd-hint"><kbd>WASD</kbd> move &middot; <kbd>1</kbd>&ndash;<kbd>4</kbd> move slot &middot; <kbd>Q</kbd>/<kbd>E</kbd> cycle &middot; <kbd>F</kbd> event &middot; <kbd>M</kbd> Mega &middot; <kbd>Z</kbd> Z-Move &middot; <kbd>T</kbd> Tera &middot; <kbd>X</kbd> Dynamax &middot; <kbd>V</kbd> evolve &middot; <kbd>Esc</kbd> pause</p>
     <p class="sub touch-hint">Arrastra el dedo para moverte · toca un ataque para cambiarlo</p>
     <p id="pause-coop" class="note hidden">Partida en grupo: el juego sigue mientras estás aquí.</p>
     <div id="pause-sound" class="sound-inline"></div>
@@ -593,8 +593,15 @@
 <script defer src="js/entities/vfx.js"></script>
 <script defer src="js/entities/fx.js"></script>
 <script defer src="js/entities/projectile.js"></script>
+<script defer src="js/systems/status.js"></script>
 <script defer src="js/entities/enemy.js"></script>
 <script defer src="js/entities/pickup.js"></script>
+<script defer src="js/data/mega-sprites.js"></script>
+<script defer src="js/data/generated-mega-sprites.js"></script>
+<script defer src="js/data/generated-gmax-sprites.js"></script>
+<script defer src="js/systems/evolution.js"></script>
+<script defer src="js/systems/battle.js"></script>
+<script defer src="js/systems/mega.js"></script>
 <script defer src="js/entities/player.js"></script>
 <!-- sistemas -->
 <script defer src="js/systems/combat.js"></script>
@@ -605,6 +612,7 @@
 <script defer src="js/systems/rift.js"></script>
 <script defer src="js/systems/judgment.js"></script>
 <script defer src="js/systems/events.js"></script>
+<script defer src="js/systems/expeditions.js"></script>
 <script defer src="js/systems/weather.js"></script>
 <script defer src="js/systems/pathing.js"></script>
 <script defer src="js/systems/progress.js"></script>

@@ -6,6 +6,33 @@
  * Cada línea en español y en inglés.
  */
 G.CHANGELOG = [
+  { d: '2026-10-18', title: ['Battle specializations and field challenges', 'Battle specializations and field challenges'], new: [
+    ['Gigantamax Snorlax has normal/shiny sprites and G-Max Replenish: restore one previously consumed Lum Berry once during its transformation.', 'Gigantamax Snorlax has normal/shiny sprites and G-Max Replenish: restore one previously consumed Lum Berry once during its transformation.'],
+    ['Mega Lucario joins with normal/shiny sprites and Adaptability. Matching-type moves now gain a modest STAB bonus.', 'Mega Lucario joins with normal/shiny sprites and Adaptability. Matching-type moves now gain a modest STAB bonus.'],
+    ['Choose one run specialization at Mega Sanctuary: Mega Evolution, a matching Z-Crystal, Terastallization or Dynamax. Use Z, T or X after unlocking equipment.', 'Choose one run specialization at Mega Sanctuary: Mega Evolution, a matching Z-Crystal, Terastallization or Dynamax. Use Z, T or X after unlocking equipment.'],
+    ['Space-Time Distortion rotates type resonance for 90 seconds. Berry Grove asks you to defend a tree for a healing harvest or one-use Lum Berry.', 'Space-Time Distortion rotates type resonance for 90 seconds. Berry Grove asks you to defend a tree for a healing harvest or one-use Lum Berry.'],
+    ['Press V to accept eligible starter species evolutions from generations 1-3. Collection and ranking identity stay unchanged.', 'Press V to accept eligible starter species evolutions from generations 1-3. Collection and ranking identity stay unchanged.'],
+    ['Target Poison/Burn indicators show stack counts and independent expiry ranges. Event beacons preview their rewards.', 'Target Poison/Burn indicators show stack counts and independent expiry ranges. Event beacons preview their rewards.']
+  ] },
+  { d: '2026-10-18', title: ['Mega Venusaur', 'Mega Venusaur'], new: [
+    ['Mega Venusaur: normal and shiny sprites, Venusaurite and Thick Fat. Fire and Ice hits deal 50% less damage; equip the stone and press M after a Sanctuary trial.', 'Mega Venusaur: normal and shiny sprites, Venusaurite and Thick Fat. Fire and Ice hits deal 50% less damage; equip the stone and press M after a Sanctuary trial.']
+  ] },
+  { d: '2026-10-18', title: ['Mega trials and Team Rocket', 'Mega trials and Team Rocket'], new: [
+    ['Mega Sanctuary: charge three obelisks and defeat the guardian for a Key Stone and a compatible Mega Stone.', 'Mega Sanctuary: charge three obelisks and defeat the guardian for a Key Stone and a compatible Mega Stone.'],
+    ['Mega Charizard X and Mega Gengar have real normal and shiny form sprites. Equip their stone and press M to transform once per run.', 'Mega Charizard X and Mega Gengar have real normal and shiny form sprites. Equip their stone and press M to transform once per run.'],
+    ['Rocket Ambush: defeat three waves and a commander, then choose a TM reward. Approach an event beacon and press F to begin.', 'Rocket Ambush: defeat three waves and a commander, then choose a TM reward. Approach an event beacon and press F to begin.']
+  ] },
+  { d: '2026-10-18', title: ['Combat balance foundations', 'Combat balance foundations'], chg: [
+    ['Poison now scales with its source move, with a shared eight-stack cap and individual expiry times.',
+     'Poison now scales with its source move, with a shared eight-stack cap and individual expiry times.'],
+    ['This edition uses English. Cloud features require a separate Firebase project.',
+     'This edition uses English. Cloud features require a separate Firebase project.']
+  ], fix: [
+    ['Type immunity prevents both damage and attached effects. Poison and Steel resist poisoning; Fire resists burns.',
+     'Type immunity prevents both damage and attached effects. Poison and Steel resist poisoning; Fire resists burns.'],
+    ['Damage-over-time ticks preserve elapsed time at every frame rate and credit their source without triggering life steal.',
+     'Damage-over-time ticks preserve elapsed time at every frame rate and credit their source without triggering life steal.']
+  ] },
   { d: '2026-10-15', title: ['Actualizaciones obligatorias', 'Required updates'], chg: [
     ['Cuando una actualización sea obligatoria (por ejemplo, para arreglar un fallo importante), la partida en curso se termina tras un aviso de 10 s y el juego se recarga. No pierdes nada: las monedas, los tickets, los récords y el ranking de esa partida se guardan como al abandonarla.',
      'When an update is required (for example, to fix an important bug), your current run ends after a 10 s notice and the game reloads. You lose nothing: that run’s coins, tickets, records and leaderboard entry are saved as if you had quit.']

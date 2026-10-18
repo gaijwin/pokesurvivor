@@ -1,0 +1,2 @@
+/* Generated Mega Venusaur artwork; frame geometry from tools/pack_generated_venusaur.cjs. */
+G.SPRITE_META["mega-venusaur"] = {"s":2,"sh":1,"a":{"Idle":{"w":40,"h":40,"n":1,"r":8,"d":[30],"ax":20,"ay":35},"Walk":{"w":40,"h":40,"n":2,"r":8,"d":[10,10],"ax":20,"ay":35},"Attack":{"w":40,"h":40,"n":1,"r":8,"d":[12],"ax":20,"ay":35},"Shoot":{"w":40,"h":40,"n":1,"r":8,"d":[12],"ax":20,"ay":35},"Charge":{"w":40,"h":40,"n":1,"r":8,"d":[16],"ax":20,"ay":35},"Hurt":{"w":40,"h":40,"n":1,"r":8,"d":[10],"ax":20,"ay":35},"Faint":{"w":40,"h":40,"n":1,"r":8,"d":[30],"ax":20,"ay":35}}};

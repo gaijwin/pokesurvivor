@@ -1,0 +1,113 @@
+{
+  "commit": "5bbc3b29288d6af4596f21188fb8b54e0e9b739f",
+  "assumptions": "Neutral type/weather; steady 8 stacks; no shield; continuous refresh; no ramp/overkill. B=300 is a design scenario, not measured build DPS. Projectile bounds exclude status, accuracy, crit, player multipliers.",
+  "rows": [
+    {
+      "hp": 100,
+      "poison8Dps": 17.667,
+      "burn8Level40Dps": 87.04,
+      "poisonOnlySteadyTtk": 5.66,
+      "proposedPoison8DpsAtB300": 2.5
+    },
+    {
+      "hp": 1000,
+      "poison8Dps": 161.667,
+      "burn8Level40Dps": 87.04,
+      "poisonOnlySteadyTtk": 6.186,
+      "proposedPoison8DpsAtB300": 25
+    },
+    {
+      "hp": 10000,
+      "poison8Dps": 1601.667,
+      "burn8Level40Dps": 87.04,
+      "poisonOnlySteadyTtk": 6.243,
+      "proposedPoison8DpsAtB300": 105
+    },
+    {
+      "hp": 24800,
+      "poison8Dps": 3969.667,
+      "burn8Level40Dps": 87.04,
+      "poisonOnlySteadyTtk": 6.247,
+      "proposedPoison8DpsAtB300": 105
+    },
+    {
+      "hp": 54000,
+      "poison8Dps": 8641.667,
+      "burn8Level40Dps": 87.04,
+      "poisonOnlySteadyTtk": 6.249,
+      "proposedPoison8DpsAtB300": 105
+    }
+  ],
+  "frames": [
+    {
+      "fps": 30,
+      "seconds": 10,
+      "damage": 38112,
+      "observedDps": 3811.2
+    },
+    {
+      "fps": 60,
+      "seconds": 10,
+      "damage": 40494,
+      "observedDps": 4049.4
+    },
+    {
+      "fps": 144,
+      "seconds": 10,
+      "damage": 40494,
+      "observedDps": 4049.4
+    }
+  ],
+  "moves": [
+    {
+      "id": "ember",
+      "level": 5,
+      "evolved": true,
+      "damage": 46.98,
+      "cooldown": 0.39,
+      "projectiles": 5,
+      "singleProjectileDpsAtAtk1": 120.462,
+      "allProjectilesUpperBound": 602.308
+    },
+    {
+      "id": "sludge",
+      "level": 5,
+      "evolved": true,
+      "damage": 44.37,
+      "cooldown": 0.45,
+      "projectiles": 5,
+      "singleProjectileDpsAtAtk1": 98.6,
+      "allProjectilesUpperBound": 493
+    },
+    {
+      "id": "poison-sting",
+      "level": 5,
+      "evolved": true,
+      "damage": 20.88,
+      "cooldown": 0.255,
+      "projectiles": 5,
+      "singleProjectileDpsAtAtk1": 81.882,
+      "allProjectilesUpperBound": 409.412
+    },
+    {
+      "id": "water-gun",
+      "level": 5,
+      "evolved": true,
+      "damage": 36.54,
+      "cooldown": 0.33,
+      "projectiles": 5,
+      "singleProjectileDpsAtAtk1": 110.727,
+      "allProjectilesUpperBound": 553.636
+    },
+    {
+      "id": "thunder-shock",
+      "level": 5,
+      "evolved": true,
+      "damage": 33.93,
+      "cooldown": 0.3,
+      "projectiles": 5,
+      "singleProjectileDpsAtAtk1": 113.1,
+      "allProjectilesUpperBound": 565.5
+    }
+  ]
+}

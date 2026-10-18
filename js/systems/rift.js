@@ -40,7 +40,7 @@ G.Rift = (() => {
       rift.ttl -= dt;
       if (rift.ttl <= 0) { rift = null; return; }
       if (!arena && !pl.dead && G.U.dist2(pl.x, pl.y, rift.x, rift.y - 10) < 30 * 30) enter();
-    } else if (!arena && authority() && time > FROM && time < G.Judgment.AT - 120) {
+    } else if (!(G.Expeditions && G.Expeditions.busy) && !G.Events.current && !arena && authority() && time > FROM && time < G.Judgment.AT - 120) {
       checkT -= dt;
       if (checkT <= 0) {
         checkT = CHECK;
@@ -75,7 +75,7 @@ G.Rift = (() => {
   }
 
   function enter() {
-    if (asked) return;
+    if (asked || (G.Expeditions && G.Expeditions.busy) || G.Events.current) return;
     asked = true;
     if (authority()) start();
     else G.Coop.toHost(['re']);
@@ -87,7 +87,7 @@ G.Rift = (() => {
   let nextType = null;          // pruebas/vídeos: tipo de la próxima arena
 
   function start(forceType) {
-    if (arena) return;
+    if (arena || (G.Expeditions && G.Expeditions.busy) || G.Events.current) return;
     forceType = forceType || nextType; nextType = null;
     let pool = G.DEX.filter(p => p.leg && G.SPRITE_META[p.dex]);
     if (forceType && pool.some(p => p.types.includes(forceType))) pool = pool.filter(p => p.types.includes(forceType));

@@ -1,0 +1,216 @@
+{
+  "baseline": "5bbc3b29288d6af4596f21188fb8b54e0e9b739f",
+  "assumptions": "Level 5 + evolution; atk=3; cdMul=0.7; player level 40; one guaranteed projectile hit per volley; neutral types/weather; no crit/shield/geometry/overlap; step=0.01 s; continuous attacks. Not a claim of complete game balance.",
+  "rows": [
+    {
+      "hp": 5000,
+      "move": "ember",
+      "baseline": {
+        "ttk": 8.2,
+        "directDamage": 4357,
+        "dotDamage": 643
+      },
+      "current": {
+        "ttk": 8.2,
+        "directDamage": 4369,
+        "dotDamage": 631
+      }
+    },
+    {
+      "hp": 5000,
+      "move": "sludge",
+      "baseline": {
+        "ttk": 4.81,
+        "directDamage": 2128,
+        "dotDamage": 2872
+      },
+      "current": {
+        "ttk": 9.15,
+        "directDamage": 3988,
+        "dotDamage": 1012
+      }
+    },
+    {
+      "hp": 5000,
+      "move": "poison-sting",
+      "baseline": {
+        "ttk": 4.81,
+        "directDamage": 1701,
+        "dotDamage": 3299
+      },
+      "current": {
+        "ttk": 10.72,
+        "directDamage": 3794,
+        "dotDamage": 1206
+      }
+    },
+    {
+      "hp": 5000,
+      "move": "water-gun",
+      "baseline": {
+        "ttk": 10.41,
+        "directDamage": 5000,
+        "dotDamage": 0
+      },
+      "current": {
+        "ttk": 10.41,
+        "directDamage": 5000,
+        "dotDamage": 0
+      }
+    },
+    {
+      "hp": 5000,
+      "move": "thunder-shock",
+      "baseline": {
+        "ttk": 10.3,
+        "directDamage": 5000,
+        "dotDamage": 0
+      },
+      "current": {
+        "ttk": 10.3,
+        "directDamage": 5000,
+        "dotDamage": 0
+      }
+    },
+    {
+      "hp": 14000,
+      "move": "ember",
+      "baseline": {
+        "ttk": 23.22,
+        "directDamage": 12037,
+        "dotDamage": 1963
+      },
+      "current": {
+        "ttk": 23.22,
+        "directDamage": 12064,
+        "dotDamage": 1936
+      }
+    },
+    {
+      "hp": 14000,
+      "move": "sludge",
+      "baseline": {
+        "ttk": 6.01,
+        "directDamage": 2660,
+        "dotDamage": 11340
+      },
+      "current": {
+        "ttk": 24.6,
+        "directDamage": 10507,
+        "dotDamage": 3493
+      }
+    },
+    {
+      "hp": 14000,
+      "move": "poison-sting",
+      "baseline": {
+        "ttk": 6.01,
+        "directDamage": 2142,
+        "dotDamage": 11858
+      },
+      "current": {
+        "ttk": 29.47,
+        "directDamage": 10436,
+        "dotDamage": 3564
+      }
+    },
+    {
+      "hp": 14000,
+      "move": "water-gun",
+      "baseline": {
+        "ttk": 29.35,
+        "directDamage": 14000,
+        "dotDamage": 0
+      },
+      "current": {
+        "ttk": 29.35,
+        "directDamage": 14000,
+        "dotDamage": 0
+      }
+    },
+    {
+      "hp": 14000,
+      "move": "thunder-shock",
+      "baseline": {
+        "ttk": 28.78,
+        "directDamage": 14000,
+        "dotDamage": 0
+      },
+      "current": {
+        "ttk": 28.78,
+        "directDamage": 14000,
+        "dotDamage": 0
+      }
+    },
+    {
+      "hp": 54000,
+      "move": "ember",
+      "baseline": {
+        "ttk": 89.29,
+        "directDamage": 46229,
+        "dotDamage": 7771
+      },
+      "current": {
+        "ttk": 89.56,
+        "directDamage": 46276,
+        "dotDamage": 7724
+      }
+    },
+    {
+      "hp": 54000,
+      "move": "sludge",
+      "baseline": {
+        "ttk": 7.21,
+        "directDamage": 3059,
+        "dotDamage": 50941
+      },
+      "current": {
+        "ttk": 94.83,
+        "directDamage": 40113,
+        "dotDamage": 13887
+      }
+    },
+    {
+      "hp": 54000,
+      "move": "poison-sting",
+      "baseline": {
+        "ttk": 6.61,
+        "directDamage": 2331,
+        "dotDamage": 51669
+      },
+      "current": {
+        "ttk": 113.54,
+        "directDamage": 40118,
+        "dotDamage": 13882
+      }
+    },
+    {
+      "hp": 54000,
+      "move": "water-gun",
+      "baseline": {
+        "ttk": 113.2,
+        "directDamage": 54000,
+        "dotDamage": 0
+      },
+      "current": {
+        "ttk": 113.2,
+        "directDamage": 54000,
+        "dotDamage": 0
+      }
+    },
+    {
+      "hp": 54000,
+      "move": "thunder-shock",
+      "baseline": {
+        "ttk": 111.1,
+        "directDamage": 54000,
+        "dotDamage": 0
+      },
+      "current": {
+        "ttk": 111.1,
+        "directDamage": 54000,
+        "dotDamage": 0
+      }
+    }
+  ]
+}

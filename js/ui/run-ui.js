@@ -6,6 +6,7 @@ G.RunUI = (() => {
   /** @param coop  en grupo: tras elegir, se queda esperando a los demás */
   function showLevelUp(level, list, cb, coop = false) {
     offerCb = cb; coopMode = coop;
+    $('level-choice-title').innerHTML = 'Level <span id="lvl-num"></span>';
     $('lvl-num').textContent = level;
     $('lvl-wait').textContent = '';
     $('lvl-wait').classList.toggle('hidden', !coop);
@@ -125,6 +126,24 @@ G.RunUI = (() => {
         <p>¿Te está gustando PokéSurvivor? Lo hago yo solo y los servidores cuestan dinero. Si quieres, puedes ayudarme a mantenerlo en línea.</p>
         <a class="btn small gold" href="${G.Funding.url}" target="_blank" rel="noopener">${G.Icons.html('heart', 14)} Apoyar en Ko-fi</a>
       </div>` : ''}`;
+    const damage = Object.entries(r.damageByMove || {}).sort((a, b) =>
+      Object.values(b[1]).reduce((n, v) => n + v, 0) - Object.values(a[1]).reduce((n, v) => n + v, 0));
+    if (damage.length) {
+      const panel = document.createElement('div');
+      panel.style.gridColumn = '1/-1';
+      panel.setAttribute('translate', 'no');
+      const heading = document.createElement('span');
+      heading.textContent = 'Damage breakdown · HP removed';
+      panel.appendChild(heading);
+      for (const [id, values] of damage) {
+        const move = r.moves.find(m => m.id === id);
+        const row = document.createElement('div');
+        row.style.fontSize = '13px';
+        row.textContent = `${move ? G.T(move.name) : id}: Direct ${Math.round(values.direct)} · Poison ${Math.round(values.poison)} · Burn ${Math.round(values.burn)}`;
+        panel.appendChild(row);
+      }
+      $('over-stats').appendChild(panel);
+    }
     const ask = $('over-ask');
     if (ask) ask.querySelector('.x').onclick = () => ask.remove();
     $('btn-again').onclick = onBack;

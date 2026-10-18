@@ -15,7 +15,11 @@ G.Icons = (() => {
   const MEDAL = ['.kkk....kkk.', '.krk....kqk.', '..krk..kqk..', '...krkkqk...', '....kkkk....', '...kmmmmk...',
                  '..kmwmmmnk..', '.kmwmsmmmnk.', '.kmmsssmmnk.', '.kmmmsmmmnk.', '..kmmmmmnk..', '...kkkkkk...'];
 
+  const MEGA_STONE = { pal: { p: '#bd77e7', w: '#f7e8ff', b: '#6d43b5' }, rows: [
+    '....kkkk....', '...kpwwpk...', '..kpwwppbk..', '.kpwwppbbbk.', 'kpwwpppbbbbk', 'kppppwwbbbbk',
+    'kpppwwpbbbbk', '.kppwppbbbk.', '..kpppbbbk..', '...kppbbk...', '....kkkk....', '............'] };
   const UI = {
+    'charizardite-x': MEGA_STONE, gengarite: MEGA_STONE, venusaurite: MEGA_STONE, lucarionite: MEGA_STONE, 'charizardite-y': MEGA_STONE, blastoisinite: MEGA_STONE, 'z-crystal': MEGA_STONE, mega: MEGA_STONE,
     gear: { pal: { g: '#c9d6ff', d: '#7f93c9' }, rows: [
       '....kkkk....', '.kk.kggk.kk.', '.kgkkggkkgk.', '..kggggggk..', 'kkggkkkkggkk', 'kgggk..kgddk',
       'kgggk..kgddk', 'kkggkkkkddkk', '..kggddddk..', '.kgkkddkkdk.', '.kk.kddk.kk.', '....kkkk....'] },

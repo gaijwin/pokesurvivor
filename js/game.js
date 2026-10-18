@@ -86,7 +86,8 @@ G.Game = (() => {
 
   /** @param coop  { seed, host, members } para una partida en grupo */
   function startRun(coop = null) {
-    holdBy = []; awayBy = null;
+    holdBy = []; awayBy = null; openReward = null; rewardQueue.length = 0; openItem = null; laterItems.length = 0;
+    G.Expeditions.reset(coop ? coop.seed : Date.now());
     const save = G.DB.save;
     const mon = G.DEX_BY[save.partner];
     const perks = G.Upgrades.perks(G.DB.upgradesOf(mon.dex));
@@ -199,7 +200,7 @@ G.Game = (() => {
     },
     levelStart(level) {
       // (Si tenías abierta la elección de objeto, vuelve al terminar: afterLevelUp.)
-      if (state === 'choice' && openItem && G.Coop.active) G.Coop.holdEnd();
+      if (state === 'choice' && (openItem || openReward) && G.Coop.active) G.Coop.holdEnd();
       state = 'levelup';
       G.UI.hide('scr-pause');
       G.Audio.sfx('levelup');
@@ -329,7 +330,7 @@ G.Game = (() => {
 
     G.RunUI.showOver({
       dead, time, level: pl.level, kills: pl.kills, bosses: pl.bosses, coins, record, t1: pl.t1, t10: pl.t10, judge,
-      moves: pl.moves, caught,
+      moves: pl.moves, caught, damageByMove: pl.damageByMove,
       breakdown: Object.entries(parts).filter(([, v]) => v).map(([k, v]) => `${k} ${v}`).join(' · ') +
                  (mul > 1 ? ` · ×${mul.toFixed(2)} Fortuna` : '')
     }, () => { pl = null; G.Flow.afterRun(); });
@@ -421,6 +422,8 @@ G.Game = (() => {
    * partida se quedaba parada para todos.)
    */
   let openItem = null;           // { cur, next, take } elección de objeto sin terminar
+  let openReward = null;
+  const rewardQueue = [];
   const laterItems = [];         // objetos recogidos con las cartas de nivel abiertas
   function afterLevelUp() {
     if (state !== 'playing' && state !== 'held') return;
@@ -430,13 +433,29 @@ G.Game = (() => {
       G.RunUI.showItemChoice(o.cur, o.next, o.take);
       return;
     }
-    if (laterItems.length) offerItem(laterItems.shift());
+    if (openReward) { showReward(); return; }
+    if (laterItems.length) { offerItem(laterItems.shift()); return; }
+    if (rewardQueue.length) { openReward = rewardQueue.shift(); showReward(); }
   }
 
   /** Has cogido un objeto: si no llevas ninguno te lo pones; si no, eliges. */
+  function offerReward(choices) { rewardQueue.push(choices); afterLevelUp(); }
+  function showReward() {
+    state = 'choice';
+    if (G.Coop.active) G.Coop.holdStart();
+    G.RunUI.showLevelUp(pl.level, openReward, card => {
+      card.apply(pl); openReward = null;
+      state = holdBy.length ? 'held' : 'playing';
+      if (G.Coop.active) G.Coop.holdEnd();
+      afterLevelUp();
+    });
+    document.getElementById('level-choice-title').textContent = 'Choose your reward';
+    document.getElementById('lvl-reroll').classList.add('hidden');
+  }
+
   function offerItem(id) {
     if (!pl || !G.Items.BY[id]) return;
-    if (state === 'levelup' || G.UI.isOpen('scr-levelup')) { laterItems.push(id); return; }
+    if (openItem || openReward || state === 'levelup' || G.UI.isOpen('scr-levelup')) { laterItems.push(id); return; }
     let mine = false;            // esta elección es la que ha parado el juego
     const take = got => {
       openItem = null;
@@ -523,6 +542,10 @@ G.Game = (() => {
       if (['space', 'enter', 'escape'].some(k => G.Input.tap(k))) G.Judgment.skip();
       return;
     }
+    if (state === 'choice' && openReward) {
+      for (let i = 0; i < Math.min(9,openReward.length); i++) if (G.Input.tap('digit' + (i + 1)) || G.Input.tap('numpad' + (i + 1))) G.RunUI.pick(i);
+      return;
+    }
     if (state === 'levelup') {
       for (let i = 0; i < 3; i++) {
         if (G.Input.tap('digit' + (i + 1)) || G.Input.tap('numpad' + (i + 1))) G.RunUI.pick(i);
@@ -553,6 +576,12 @@ G.Game = (() => {
     for (let i = 0; i < 4; i++) {
       if (G.Input.tap('digit' + (i + 1)) || G.Input.tap('numpad' + (i + 1))) pl.setActive(i);
     }
+    if (G.Input.tap('keym')) G.Mega.activate(pl);
+    if (G.Input.tap('keyz')) G.Battle.activateZ(pl);
+    if (G.Input.tap('keyt')) G.Battle.activateTera(pl);
+    if (G.Input.tap('keyx')) G.Battle.activateMax(pl);
+    if (G.Input.tap('keyv')) G.Evolution.activate(pl);
+    if (state === 'playing' && G.Input.tap('keyf')) G.Expeditions.request(pl);
     if (G.Input.tap('keyq')) pl.cycle(-1);
     if (G.Input.tap('keye') || G.Input.tap('tab')) pl.cycle(1);
   }
@@ -609,6 +638,7 @@ G.Game = (() => {
   }
 
   function update(dt) {
+    if (rewardQueue.length || openReward || laterItems.length) { afterLevelUp(); if (state !== 'playing') return; }
     const coop = G.Coop.active;
     if (flashT > 0) flashT -= dt;
     // La Sentencia de Arceus: mientras dura la animación, todo lo demás se para.
@@ -653,6 +683,9 @@ G.Game = (() => {
     G.World.update(dt, G.Camera);
 
     const all = everyone();
+    G.Battle.update(dt, pl);
+    G.Battle.hostWeather(dt, all);
+    G.Mega.update(dt, all);
     if (!coop || G.Coop.isHost) { G.Path.update(dt, all); G.Spawner.update(dt, all, time); }
     else G.Spawner.tickBanner(dt);
     G.EnemyMgr.update(dt, all);
@@ -667,6 +700,7 @@ G.Game = (() => {
     G.Rift.update(dt, pl, time);
     G.Judgment.update(dt, pl, time);
     G.Events.update(dt, all, time);
+    G.Expeditions.update(dt, all, time);
     G.Weather.update(dt, time, pl);
     G.FX.update(dt);
 
@@ -714,6 +748,7 @@ G.Game = (() => {
     if (rift) items.push({ y: rift.y, ent: rift });
     const arceus = pl && state !== 'ui' ? G.Judgment.drawable() : null;
     if (arceus) items.push({ y: arceus.y, ent: arceus });
+    if (pl && state !== 'ui') for (const d of G.Expeditions.drawables()) items.push({ y: d.y, ent: d });
     if (pl && state !== 'ui') for (const d of G.Events.drawables()) items.push({ y: d.y, ent: d });
     items.sort((a, b) => a.y - b.y);
     for (const it of items) {
@@ -863,7 +898,7 @@ G.Game = (() => {
   })();
 
   return {
-    init, startRun, everyone, levelXp, flash, offerBond,
+    init, startRun, everyone, levelXp, flash, offerBond, offerItem, offerReward,
     /** Para pruebas: salta el reloj de la run. */
     debugTime(t) { tampered = true; time = t; },
     /** Para grabar vídeos: cámara lenta (0,5 = mitad de velocidad). */

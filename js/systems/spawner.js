@@ -111,7 +111,7 @@ G.Spawner = (() => {
     if (announceT > 0) announceT -= dt;
     // En la arena de la grieta no sale nada más (y el reloj de jefes espera).
     // En la Sentencia de Arceus, sólo sus legendarios (systems/judgment.js).
-    if (G.Rift.inArena || G.Judgment.active) return;
+    if (G.Rift.inArena || G.Judgment.active || (G.Expeditions && G.Expeditions.active)) return;
 
     // Precarga lo que va a salir en el próximo minuto.
     preloadT -= dt;
@@ -119,7 +119,7 @@ G.Spawner = (() => {
 
     // --- jefes ---
     const b = G.Enemies.BOSSES[bossIdx];
-    if (b && t >= b.at) { spawnBoss(anchor(), t, b); bossIdx++; }
+    if (b && t >= b.at && !(G.Expeditions && G.Expeditions.busy)) { spawnBoss(anchor(), t, b); bossIdx++; }
 
     // Combate de jefe: las oleadas bajan al 25% y no hay mareas, para que el
     // jefe sea un momento propio y se le pueda apuntar entre la multitud.

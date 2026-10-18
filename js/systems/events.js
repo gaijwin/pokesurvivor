@@ -35,6 +35,7 @@ G.Events = (() => {
   // ---------------- ciclo ----------------
 
   function update(dt, players, time) {
+    if ((G.Expeditions && G.Expeditions.busy) || G.Rift.inArena || G.Judgment.active) return;
     if (cur) {
       cur.t += dt;
       if (cur.id !== 'lost' && cur.t >= cur.dur && authority()) end();
@@ -53,7 +54,7 @@ G.Events = (() => {
     if (cur) return;
     nextT -= dt;
     if (nextT > 0) return;
-    if (G.EnemyMgr.bossAlive()) { nextT = 10; return; }
+    if (G.EnemyMgr.bossAlive() || G.Rift.rift) { nextT = 10; return; }
     nextT = G.U.rand(EVERY[0], EVERY[1]);
     const ids = ['horde', 'gold', 'lost'].filter(id => id !== last);
     start(G.U.pick(ids), time, players);
